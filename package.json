@@ -1,0 +1,16 @@
+{
+  "name": "palestra-vendita-qed",
+  "version": "1.0.0",
+  "description": "Palestra di Vendita QED — Sales Fitness — Luigi Predebon",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Luigi Predebon",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
