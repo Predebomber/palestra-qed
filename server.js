@@ -16,8 +16,7 @@ const PORT = 3000;
 // ── Configurazione ───────────────────────────────────────────
 // Inserisci qui la tua API key Anthropic
 // Ottienila su: https://console.anthropic.com
-const ANTHROPIC_API_KEY = 'sk-ant-INSERISCI-QUI-LA-TUA-API-KEY';
-
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 // Password di accesso alla palestra (cambia pure)
 const PASSWORD = 'QED2025';
 // ─────────────────────────────────────────────────────────────
