@@ -25,8 +25,7 @@ const PASSWORD = 'QED2025';
 app.use(cors({ origin: `http://localhost:${PORT}` }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Verifica password
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));// Verifica password
 app.post('/api/login', (req, res) => {
   const { password } = req.body;
   if (password === PASSWORD) {
