@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palestra di Vendita QED — Sales Fitness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0D0D0D; --bg2:#161616; --bg3:#1E1E1E; --bg4:#252525;
+    --accent:#FF6B35; --accent-dark:#CC5020; --gold:#F5A623;
+    --text:#F0F0F0; --text2:#AAAAAA; --text3:#666666;
+    --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+    --radius:8px; --radius-lg:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;}
+
+  /* LOGIN */
+  #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;}
+  #login-screen::before{content:'';position:absolute;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,107,53,0.18) 0%,transparent 70%);pointer-events:none;}
+  #login-screen::after{content:'';position:absolute;bottom:-150px;right:-150px;width:500px;height:500px;background:radial-gradient(circle,rgba(245,166,35,0.1) 0%,transparent 70%);pointer-events:none;}
+  .login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:3rem 2.5rem;width:420px;max-width:95vw;position:relative;z-index:1;}
+  .login-logo{text-align:center;margin-bottom:2rem;}
+  .logo-badge{display:inline-block;background:var(--accent);color:#fff;font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;letter-spacing:4px;padding:10px 24px;border-radius:6px;margin-bottom:14px;}
+  .login-logo h1{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:2px;}
+  .login-logo p{font-size:13px;color:var(--text2);margin-top:6px;}
+  .login-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+  .login-label{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block;}
+  .login-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'Roboto',sans-serif;font-size:16px;padding:14px 16px;letter-spacing:3px;outline:none;transition:border-color 0.2s;}
+  .login-input:focus{border-color:var(--accent);}
+  .login-btn{width:100%;margin-top:16px;padding:15px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.15s,transform 0.1s;}
+  .login-btn:hover{background:var(--accent-dark);}
+  .login-btn:active{transform:scale(0.98);}
+  .login-btn:disabled{opacity:0.5;cursor:not-allowed;}
+  .login-error{margin-top:12px;color:var(--accent);font-size:13px;text-align:center;min-height:18px;}
+  .login-footer{text-align:center;margin-top:2rem;font-size:12px;color:var(--text3);}
+
+  /* APP */
+  #app-screen{display:none;min-height:100vh;}
+  .nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;height:60px;gap:16px;position:sticky;top:0;z-index:100;}
+  .nav-logo{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;}
+  .nav-sep{color:var(--border2);margin:0 4px;}
+  .nav-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:400;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+  .nav-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+  .nav-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;}
+  .nb-accent{background:rgba(255,107,53,0.2);color:var(--accent);}
+  .nb-gold{background:rgba(245,166,35,0.2);color:var(--gold);}
+  .nb-green{background:rgba(52,211,153,0.2);color:#34D399;}
+  .nb-red{background:rgba(232,80,58,0.2);color:#F87171;}
+  .nb-gray{background:var(--bg3);color:var(--text2);}
+
+  .main{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+  .screen{display:none;} .screen.active{display:block;}
+
+  .section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .setup-hero{margin-bottom:2rem;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);border-left:4px solid var(--accent);}
+  .setup-hero h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:2px;line-height:1.2;}
+  .setup-hero h2 span{color:var(--accent);}
+  .setup-hero p{font-size:14px;color:var(--text2);margin-top:8px;}
+
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;}
+
+  .option-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+  .option-card:hover{border-color:var(--border2);background:var(--bg3);}
+  .option-card.selected{border-color:var(--accent);background:rgba(255,107,53,0.08);}
+  .option-card.selected .oc-title{color:var(--accent);}
+  .oc-icon{font-size:22px;margin-bottom:8px;}
+  .oc-title{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+  .oc-sub{font-size:12px;color:var(--text2);line-height:1.4;}
+
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;transition:all 0.15s;}
+  .btn:hover{background:var(--bg3);}
+  .btn:active{transform:scale(0.97);}
+  .btn-accent{background:var(--accent);border-color:var(--accent-dark);color:#fff;}
+  .btn-accent:hover{background:var(--accent-dark);}
+  .btn-accent:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .btn-sm{padding:6px 14px;font-size:13px;}
+  .btn-orange{background:rgba(255,107,53,0.15);border-color:rgba(255,107,53,0.4);color:var(--accent);}
+  .btn-orange:hover{background:rgba(255,107,53,0.25);}
+  .btn-purple{background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.4);color:#A78BFA;}
+  .btn-purple:hover{background:rgba(139,92,246,0.25);}
+
+  .chat-header{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+  .product-tag{font-size:12px;color:var(--text2);margin-left:auto;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  #chat-area{display:flex;flex-direction:column;gap:14px;min-height:340px;max-height:440px;overflow-y:auto;padding:4px 0 10px;}
+  #chat-area::-webkit-scrollbar{width:4px;}
+  #chat-area::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
+
+  .msg{display:flex;gap:10px;align-items:flex-start;}
+  .msg.user{flex-direction:row-reverse;}
+  .msg-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;flex-shrink:0;letter-spacing:1px;}
+  .av-client{background:rgba(255,107,53,0.2);color:var(--accent);border:1px solid rgba(255,107,53,0.3);}
+  .av-user{background:rgba(245,166,35,0.2);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
+  .msg-bubble{max-width:76%;padding:11px 15px;border-radius:var(--radius-lg);font-size:14px;line-height:1.6;}
+  .msg.client .msg-bubble{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-top-left-radius:4px;}
+  .msg.user .msg-bubble{background:var(--accent);color:#fff;border-top-right-radius:4px;}
+  .msg.coach .msg-bubble{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:#C4B5FD;font-size:13px;border-radius:var(--radius);max-width:100%;white-space:pre-line;}
+  .msg.system .msg-bubble{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--gold);font-size:13px;border-radius:var(--radius);max-width:100%;}
+
+  .typing-dots{display:flex;gap:5px;align-items:center;padding:4px 0;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:blink 1.2s infinite;}
+  .dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
+  @keyframes blink{0%,80%,100%{opacity:0.2}40%{opacity:1}}
+
+  .input-row{display:flex;gap:10px;margin-top:14px;}
+  .input-row textarea{flex:1;resize:none;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-family:'Roboto',sans-serif;font-size:14px;padding:11px 14px;line-height:1.5;height:68px;outline:none;transition:border-color 0.2s;}
+  .input-row textarea:focus{border-color:var(--accent);}
+  .input-row textarea::placeholder{color:var(--text3);}
+  .btn-col{display:flex;flex-direction:column;gap:6px;}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:6px;}
+  .turn-info{font-size:12px;color:var(--text3);}
+  .toolbar-right{display:flex;gap:6px;}
+
+  .result-hero{text-align:center;padding:2rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:1.5rem;}
+  .result-score{font-family:'Oswald',sans-serif;font-size:72px;font-weight:700;line-height:1;}
+  .result-label{font-size:13px;color:var(--text2);margin-top:6px;letter-spacing:1px;text-transform:uppercase;}
+  .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
+  .score-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;}
+  .sc-label{font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+  .sc-bar-wrap{background:var(--bg4);border-radius:99px;height:5px;overflow:hidden;}
+  .sc-bar{height:5px;border-radius:99px;transition:width 0.7s ease;}
+  .sc-val{font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;color:var(--text);margin-top:8px;}
+
+  .cervelli-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .cervello-pill{font-size:12px;padding:5px 12px;border-radius:var(--radius);font-weight:500;line-height:1.4;}
+  .cp-rettile{background:rgba(248,113,113,0.12);color:#F87171;border:1px solid rgba(248,113,113,0.25);}
+  .cp-limbico{background:rgba(52,211,153,0.12);color:#34D399;border:1px solid rgba(52,211,153,0.25);}
+  .cp-neocortex{background:rgba(96,165,250,0.12);color:#60A5FA;border:1px solid rgba(96,165,250,0.25);}
+
+  .fb-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;margin-bottom:12px;}
+  .fb-box h3{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+  .fb-box p{font-size:13px;color:var(--text2);line-height:1.7;}
+  .fb-box strong{color:var(--text);font-weight:500;}
+  .result-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:1.5rem;}
+  hr.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+
+
+  /* PRODUCT MODE */
+  .mode-toggle { display:flex; gap:10px; margin-bottom:1.5rem; }
+  .mode-btn { flex:1; padding:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); cursor:pointer; text-align:center; transition:all 0.15s; }
+  .mode-btn:hover { border-color:var(--border2); background:var(--bg3); }
+  .mode-btn.active { border-color:var(--accent); background:rgba(255,107,53,0.08); }
+  .mode-btn .mb-icon { font-size:24px; margin-bottom:6px; }
+  .mode-btn .mb-title { font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--text); text-transform:uppercase; letter-spacing:1px; }
+  .mode-btn.active .mb-title { color:var(--accent); }
+  .mode-btn .mb-sub { font-size:12px; color:var(--text2); margin-top:3px; line-height:1.3; }
+  #product-panel { display:none; }
+  #product-panel.visible { display:block; }
+  #consulenza-panel { display:none; }
+  #consulenza-panel.visible { display:block; }
+  .product-input { width:100%; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); color:var(--text); font-family:'Roboto',sans-serif; font-size:14px; padding:12px 14px; outline:none; transition:border-color 0.2s; margin-bottom:10px; }
+  .product-input:focus { border-color:var(--accent); }
+  .product-input::placeholder { color:var(--text3); }
+  .quick-products { display:flex; flex-wrap:wrap; gap:6px; }
+  .qp-tag { font-size:12px; padding:5px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:99px; cursor:pointer; color:var(--text2); transition:all 0.15s; white-space:nowrap; }
+  .qp-tag:hover { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.08); }
+  .consulenza-info { background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:var(--radius-lg); padding:1rem 1.2rem; }
+  .consulenza-info p { font-size:13px; color:var(--gold); line-height:1.6; }
+  .consulenza-info strong { color:var(--text); }
+  /* REAL-TIME FEEDBACK */
+  .rt-feedback { border-radius: var(--radius); padding: 10px 14px; font-size: 13px; line-height: 1.6; max-width: 100%; margin: 0; }
+  .rt-feedback.ok { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+  .rt-feedback.err { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.4); color: #FF9066; }
+  .rt-feedback strong { font-weight: 600; display: block; margin-bottom: 4px; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; font-size: 14px; }
+  .rt-feedback .retry-hint { margin-top: 6px; color: var(--text2); font-style: italic; }
+  @media(max-width:600px){
+    .grid-3,.grid-4{grid-template-columns:1fr 1fr;}
+    .score-grid{grid-template-columns:1fr;}
+    .main{padding:1rem;} .nav{padding:0 1rem;}
+    .result-score{font-size:56px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-badge">QED</div>
+      <h1>Palestra di Vendita</h1>
+      <p>Sales Fitness — metodo di Luigi Predebon</p>
+    </div>
+    <hr class="login-divider">
+    <label class="login-label" for="pwd-input">Codice di accesso</label>
+    <input type="password" id="pwd-input" class="login-input" placeholder="••••••••" autocomplete="current-password">
+    <button class="login-btn" id="login-btn">ENTRA IN PALESTRA →</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-footer">© Luigi Predebon — tutti i diritti riservati</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <nav class="nav">
+    <span class="nav-logo">QED</span>
+    <span class="nav-sep">|</span>
+    <span class="nav-title">Palestra di Vendita</span>
+    <div class="nav-right" id="nav-badges"></div>
+  </nav>
+  <div class="main">
+
+    <!-- SETUP -->
+    <div id="screen-setup" class="screen active">
+      <div class="setup-hero">
+        <h2>ALLENIAMOCI AD UNA<br><span>VENDITA DI SUCCESSO</span></h2>
+        <p>Scegli scenario, profilo cliente e fase da allenare. Il cliente è generato dall'AI — ogni sessione è diversa.</p>
+      </div>
+
+      <div class="section-label">Contesto commerciale</div>
+      <div class="grid-3" id="ctx-grid">
+        <div class="option-card" data-ctx="bancario"><div class="oc-icon">🏦</div><div class="oc-title">Bancario</div><div class="oc-sub">Relationship manager, finanziamenti, servizi corporate, PMI</div></div>
+        <div class="option-card" data-ctx="assicurativo"><div class="oc-icon">🛡️</div><div class="oc-title">Assicurazioni</div><div class="oc-sub">Polizze vita, TCM, previdenza, protezione familiare</div></div>
+        <div class="option-card" data-ctx="b2b"><div class="oc-icon">💼</div><div class="oc-title">B2B Generico</div><div class="oc-sub">Servizi aziendali, consulenza, SaaS, forniture</div></div>
+      </div>
+
+      <div class="section-label">Modalità prodotto</div>
+      <div class="mode-toggle">
+        <div class="mode-btn" id="mode-specifico" onclick="setMode('specifico')">
+          <div class="mb-icon">🎯</div>
+          <div class="mb-title">Prodotto specifico</div>
+          <div class="mb-sub">Scelgo io il prodotto da offrire</div>
+        </div>
+        <div class="mode-btn" id="mode-consulenza" onclick="setMode('consulenza')">
+          <div class="mb-icon">🔍</div>
+          <div class="mb-title">Consulenza libera</div>
+          <div class="mb-sub">Prima ascolto, poi scopro cosa proporre</div>
+        </div>
+      </div>
+
+      <div id="product-panel">
+        <div class="section-label">Prodotto da offrire</div>
+        <input type="text" id="product-custom" class="product-input" placeholder="Scrivi il prodotto o servizio che vuoi simulare di vendere...">
+        <div id="quick-products" class="quick-products"></div>
+      </div>
+
+      <div id="consulenza-panel">
+        <div class="consulenza-info">
+          <p><strong>Modalità consulenza:</strong> Il cliente avrà una situazione e degli obiettivi reali, ma non saprai in anticipo cosa proporre. Dovrai fare l'intervista, scoprire i bisogni e decidere tu quale soluzione è più adatta. L'AI valuterà se la tua proposta finale è coerente con quanto emerso dall'ascolto.</p>
+        </div>
+      </div>
+
+      <div class="section-label">Profilo cliente</div>
+      <div class="grid-4" id="prof-grid">
+        <div class="option-card" data-prof="portafoglio"><div class="oc-icon">✅</div><div class="oc-title">Cliente portafoglio</div><div class="oc-sub">Già conosciuto, rapporto avviato — cross-selling</div></div>
+        <div class="option-card" data-prof="prospect"><div class="oc-icon">🤝</div><div class="oc-title">Prospect referenziato</div><div class="oc-sub">Nuovo, contatto tramite referenza — costruire fiducia</div></div>
+        <div class="option-card" data-prof="freddo"><div class="oc-icon">🧊</div><div class="oc-title">Prospect freddo</div><div class="oc-sub">Nessun contatto precedente, chiamata a freddo — alta diffidenza</div></div>
+        <div class="option-card" data-prof="resistente"><div class="oc-icon">🚫</div><div class="oc-title">Cliente resistente</div><div class="oc-sub">Diffidente, molte obiezioni, esperienze negative</div></div>
+      </div>
+
+      <div class="section-label">Fase da allenare</div>
+      <div class="grid-4" id="fase-grid">
+        <div class="option-card" data-fase="approccio"><div class="oc-icon">🚪</div><div class="oc-title">Approccio</div><div class="oc-sub">Primo contatto, rapport, campo di assenso, cervello rettile</div></div>
+        <div class="option-card" data-fase="intervista"><div class="oc-icon">🎯</div><div class="oc-title">Intervista</div><div class="oc-sub">Domande aperte, ascolto attivo, scoprire il desiderio</div></div>
+        <div class="option-card" data-fase="proposta"><div class="oc-icon">📊</div><div class="oc-title">Proposta 5 colonne</div><div class="oc-sub">Value map, obiettivi, condizioni di perdita, vantaggi</div></div>
+        <div class="option-card" data-fase="obiezioni"><div class="oc-icon">⚡</div><div class="oc-title">Obiezioni e chiusura</div><div class="oc-sub">Metodo ARCO, segnali d'acquisto, chiusura positiva</div></div>
+      </div>
+
+      <div class="section-label">Difficoltà</div>
+      <div class="grid-3" id="diff-grid">
+        <div class="option-card" data-diff="facile"><div class="oc-icon">🌱</div><div class="oc-title">Principiante</div><div class="oc-sub">Cliente collaborativo, spazio per errori</div></div>
+        <div class="option-card" data-diff="medio"><div class="oc-icon">🔥</div><div class="oc-title">Intermedio</div><div class="oc-sub">Realistico, qualche resistenza, pressione moderata</div></div>
+        <div class="option-card" data-diff="difficile"><div class="oc-icon">⛈️</div><div class="oc-title">Avanzato</div><div class="oc-sub">Esigente, critico, alta pressione — niente sconti</div></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:1rem;">
+        <button class="btn btn-accent" id="btn-start" disabled>INIZIA SIMULAZIONE →</button>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="screen-chat" class="screen">
+      <div class="chat-header" id="chat-header"></div>
+      <div id="chat-area"></div>
+      <div class="input-row">
+        <textarea id="user-input" placeholder="Scrivi la tua risposta al cliente..."></textarea>
+        <div class="btn-col">
+          <button class="btn btn-accent btn-sm" id="btn-send" title="Invia (Invio)">→</button>
+          <button class="btn btn-sm" id="btn-eval" title="Chiudi e valuta">📊</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span class="turn-info" id="turn-info"></span>
+        <div class="toolbar-right">
+          <button class="btn btn-sm btn-orange" id="btn-hint">💡 Suggerimento</button>
+          <button class="btn btn-sm btn-purple" id="btn-arco">⚡ ARCO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="screen">
+      <div class="result-hero">
+        <div class="result-score" id="result-score">—</div>
+        <div class="result-label">/ 100 PUNTI</div>
+        <div style="margin-top:12px;" id="result-badge"></div>
+      </div>
+      <div class="score-grid" id="score-grid"></div>
+      <div class="cervelli-row" id="cervelli-row"></div>
+      <div class="fb-box"><h3>🧠 Analisi — 3 cervelli + metodo ARCO</h3><p id="fb-main">Analisi in corso...</p></div>
+      <div class="fb-box"><h3>📝 Parole: bene vs da correggere</h3><p id="fb-words">Analisi in corso...</p></div>
+      <div class="fb-box"><h3>🎯 Esercizio per la prossima sessione</h3><p id="fb-exercise">Analisi in corso...</p></div>
+      <div class="result-actions">
+        <button class="btn" id="btn-retry">↺ Stessa simulazione</button>
+        <button class="btn btn-accent" id="btn-new">+ Nuova simulazione</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Stato sessione ────────────────────────────────────────────
+let SESSION_TOKEN = null;
+
+// ── Login ─────────────────────────────────────────────────────
+async function doLogin() {
+  const pwd = document.getElementById('pwd-input').value.trim();
+  if (!pwd) return;
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'VERIFICA...';
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ password: pwd })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      SESSION_TOKEN = data.token;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+    } else {
+      showLoginError('Codice non valido. Riprova.');
+      btn.disabled = false; btn.textContent = 'ENTRA IN PALESTRA →';
+    }
+  } catch(e) {
+    showLoginError('Server non raggiungibile. Assicurati che server.js sia in esecuzione.');
+    btn.disabled = false; btn.textContent = 'ENTRA IN PALESTRA →';
+  }
+}
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  document.getElementById('pwd-input').value = '';
+  document.getElementById('pwd-input').focus();
+  setTimeout(() => el.textContent = '', 4000);
+}
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('pwd-input').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ── Chiamata API (via server locale) ─────────────────────────
+async function callAPI(system, messages) {
+  const body = { messages };
+  if (system) body.system = system;
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-session-token': SESSION_TOKEN },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('API error ' + res.status);
+  const data = await res.json();
+  return data.content?.[0]?.text || '...';
+}
+
+// ── Dati ─────────────────────────────────────────────────────
+const SCENARIOS = {
+  bancario:    { label:"Bancario / Finanziario", products:["linea di credito revolving per PMI","mutuo chirografario per investimento produttivo","servizio di cash management con conto dedicato","finanziamento agevolato SACE per export","conto corrente business con plafond e servizi dedicati"] },
+  assicurativo:{ label:"Assicurazioni",          products:["polizza TCM temporanea caso morte","piano previdenziale integrativo per gap pensionistico","polizza vita mista con componente di risparmio","copertura Long Term Care per non autosufficienza","polizza sanitaria con accesso a strutture private"] },
+  b2b:         { label:"B2B Generico",           products:["piattaforma CRM con onboarding dedicato","servizio di formazione commerciale su misura","soluzione cloud per digitalizzazione dei processi","contratto di fornitura pluriennale con SLA garantito","consulenza strategica per riorganizzazione commerciale"] }
+};
+const FASE_LABELS = { approccio:"Approccio", intervista:"Intervista", proposta:"Proposta 5 colonne", obiezioni:"Obiezioni e chiusura" };
+const PROF_LABELS = { portafoglio:"Cliente di portafoglio", prospect:"Prospect referenziato", freddo:"Prospect freddo", resistente:"Cliente resistente" };
+const DIFF_LABELS = { facile:"Principiante", medio:"Intermedio", difficile:"Avanzato" };
+const DIFF_COLORS = { facile:"nb-green", medio:"nb-gold", difficile:"nb-red" };
+
+let state = { ctx:null, prof:null, fase:null, diff:null, mode:null, customProduct:null, history:[], scenario:null, turns:0, isTyping:false };
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+// ── Setup ─────────────────────────────────────────────────────
+['ctx','prof','fase','diff'].forEach(key => {
+  document.getElementById(key+'-grid').querySelectorAll('.option-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.closest('[id$="-grid"]').querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      state[key] = card.dataset[key];
+      if(key==='ctx' && state.mode==='specifico') updateQuickProducts();
+      checkReady();
+    });
+  });
+});
+function checkReady(){
+  const productOk = state.mode === 'consulenza' || (state.mode === 'specifico' && state.customProduct && state.customProduct.trim().length > 2);
+  document.getElementById('btn-start').disabled = !(state.ctx&&state.prof&&state.fase&&state.diff&&state.mode&&productOk);
+}
+function setMode(m){
+  state.mode = m;
+  document.getElementById('mode-specifico').classList.toggle('active', m==='specifico');
+  document.getElementById('mode-consulenza').classList.toggle('active', m==='consulenza');
+  document.getElementById('product-panel').classList.toggle('visible', m==='specifico');
+  document.getElementById('consulenza-panel').classList.toggle('visible', m==='consulenza');
+  if(m==='specifico') updateQuickProducts();
+  checkReady();
+}
+function updateQuickProducts(){
+  const ctx = state.ctx;
+  const map = {
+    bancario:["Linea di credito revolving","Mutuo chirografario","Cash management","Finanziamento SACE","Conto business con plafond","Factoring pro-soluto","Leasing strumentale","Fideiussione bancaria"],
+    assicurativo:["Polizza TCM (temporanea caso morte)","Piano previdenziale integrativo","Polizza vita mista","Long Term Care","Polizza sanitaria","Polizza infortuni e malattia","Protezione del patrimonio familiare","Unit Linked"],
+    b2b:["Piattaforma CRM","Formazione commerciale","Soluzione cloud","Contratto di fornitura pluriennale","Consulenza strategica","Software gestionale ERP","Servizio HR e selezione","Piano di marketing digitale"]
+  };
+  const qp = document.getElementById('quick-products');
+  if(!ctx || !map[ctx]){qp.innerHTML='';return;}
+  qp.innerHTML = map[ctx].map(p=>`<span class="qp-tag" onclick="selectQuickProduct(this,'${p}')">${p}</span>`).join('');
+}
+function selectQuickProduct(el, product){
+  document.getElementById('product-custom').value = product;
+  state.customProduct = product;
+  document.querySelectorAll('.qp-tag').forEach(t=>t.style.borderColor='');
+  el.style.borderColor='var(--accent)'; el.style.color='var(--accent)';
+  checkReady();
+}
+document.getElementById('btn-start').addEventListener('click', startSim);
+document.getElementById('product-custom').addEventListener('input', function(){
+  state.customProduct = this.value;
+  document.querySelectorAll('.qp-tag').forEach(t=>{t.style.borderColor='';t.style.color='';});
+  checkReady();
+});
+
+// ── Prompts ───────────────────────────────────────────────────
+function buildSP() {
+  const profMap = {
+    portafoglio:"Sei un cliente già in portafoglio, hai un buon rapporto con il consulente. Sei aperto all'ascolto ma vuoi capire se c'è un vantaggio concreto prima di andare avanti.",
+    prospect:"Sei un prospect referenziato. Non conosci il consulente. Sei curioso ma cauto, hai il pregiudizio tipico verso i venditori.",
+    freddo:"Sei un prospect freddo. Non ti aspettavi questa chiamata o visita, non conosci il consulente e non hai chiesto nulla. Sei sospettoso, tendi a chiudere la conversazione il prima possibile. Dici frasi come 'non ho tempo', 'non mi interessa', 'ho già qualcuno che se ne occupa'. Solo se il consulente riesce a creare curiosità genuina in modo non invadente, inizi ad abbassare la guardia.",
+    resistente:"Sei diffidente. Hai esperienze negative. Fai molte domande, sei scettico, obietti su costi e utilità."
+  };
+  const faseMap = {
+    approccio:"Stai ricevendo il consulente per un primo incontro. Valuta se ti trasmette autorevolezza e credibilità (cervello rettile). Abbassa la guardia solo se usa campo di assenso, connessione situazionale o dichiarazione di vision in modo autentico.",
+    intervista:"Il consulente ti ha già approcciato e ora ti fa domande. Rispondi con un obiettivo concreto realistico. Usa parole dense (tanto, poco, tranquillo, rischioso) che richiedono domande di precisione. Parla dei tuoi desideri e delle preoccupazioni che potrebbero ostacolarti.",
+    proposta:"Il consulente ti sta presentando la proposta usando il metodo delle 5 colonne (Obiettivo, Azione presente, Condizioni di perdita, Proposta, Vantaggi). Ascolta e reagisci in modo realistico: fai domande sul vantaggio specifico per te, chiedi chiarimenti. Se la proposta è centrata sui tuoi obiettivi e personalizzata, mostrati progressivamente interessato. Se è generica, resta freddo.",
+    obiezioni:"Il consulente ti ha presentato una proposta. Hai obiezioni concrete (costo, tempi, necessità, devi parlarne con qualcuno). Se usa il metodo ARCO (Accogli, Riformula, Condividi, Offri soluzioni) correttamente, abbassa la guardia."
+  };
+  const diffMap = {
+    facile:"Sei collaborativo. Se ricevi risposte ragionevoli le accetti.",
+    medio:"Sei realistico. Fai domande concrete ma non esageri. Sei professionale.",
+    difficile:"Sei molto critico. Interrompi, metti pressione, fai domande scomode. Duro ma non scortese."
+  };
+  return `Sei un cliente italiano in una simulazione di vendita formativa per consulenti commerciali.
+SETTORE: ${state.scenario.label}
+PRODOTTO: ${state.scenario.product}
+PROFILO: ${profMap[state.prof]}
+FASE: ${faseMap[state.fase]}
+DIFFICOLTÀ: ${diffMap[state.diff]}
+REGOLE: Parla sempre in prima persona come il cliente, in italiano. Non uscire dal personaggio. Risposte brevi (2-4 frasi). Usa un nome italiano realistico. Inizia con una battuta breve coerente col tuo profilo.`;
+}
+function buildChatSP() {
+  const p={portafoglio:"Cliente portafoglio, aperto ma valuta il vantaggio.",prospect:"Prospect referenziato, cauto, diffidente verso i venditori.",freddo:"Prospect freddo: non si aspettava il contatto, vuole chiudere la conversazione. Abbassa la guardia solo se il consulente crea curiosità genuina.",resistente:"Cliente resistente, obietta spesso."};
+  const f={approccio:"Valuta autorevolezza e credibilità.",intervista:"Rispondi con obiettivi concreti e parole dense.",proposta:"Reagisci alla proposta 5 colonne: verifica se è centrata sui tuoi obiettivi e personalizzata.",obiezioni:"Hai obiezioni realistiche. Abbassa la guardia se usa ARCO correttamente."};
+  return `Cliente in simulazione. Settore: ${state.scenario.label}. ${state.scenario.product === "__consulenza__" ? "MODALITÀ CONSULENZA: non rivelare mai un prodotto specifico, hai bisogni da scoprire." : "Prodotto: " + state.scenario.product + "."} ${p[state.prof]} ${f[state.fase]} Risposte brevi (2-4 frasi), in italiano, resta nel personaggio.`;
+}
+
+// ── Simulazione ───────────────────────────────────────────────
+async function startSim() {
+  const sc = SCENARIOS[state.ctx];
+  let product;
+  if(state.mode === 'specifico'){
+    product = state.customProduct.trim();
+  } else {
+    // Consulenza: client has needs, consultant discovers what to propose
+    product = '__consulenza__';
+  }
+  state.scenario = { product, label:sc.label };
+  state.history = []; state.turns = 0;
+  showScreen('chat'); renderChatHeader();
+  document.getElementById('chat-area').innerHTML = '';
+  updateTurnInfo();
+  await runClient(buildSP(), null, true);
+}
+
+async function runClient(sp, userMsg, isFirst=false) {
+  if (state.isTyping) return;
+  state.isTyping = true;
+  const typEl = addTyping();
+  const messages = [];
+  if (isFirst) { messages.push({role:"user", content:"Inizia la simulazione."}); }
+  else {
+    for (const h of state.history) messages.push({role: h.role==='client'?'assistant':'user', content: h.content});
+    messages.push({role:"user", content: userMsg});
+  }
+  try {
+    const reply = await callAPI(sp, messages);
+    typEl.remove();
+    addMsg('client', reply);
+    state.history.push({role:'client', content:reply});
+    if (userMsg) state.history.push({role:'user', content:userMsg});
+  } catch(e) {
+    typEl.remove();
+    addMsg('system', '⚠️ Errore: ' + e.message);
+  }
+  state.isTyping = false;
+  updateTurnInfo();
+}
+
+document.getElementById('btn-send').addEventListener('click', sendUser);
+document.getElementById('user-input').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendUser();} });
+
+async function sendUser() {
+  const input = document.getElementById('user-input');
+  const txt = input.value.trim();
+  if (!txt || state.isTyping) return;
+  input.value = ''; addMsg('user', txt); state.turns++; updateTurnInfo();
+  await runClient(buildChatSP(), txt);
+  // Real-time feedback on consultant's message
+  await checkConsultantMsg(txt);
+}
+
+async function checkConsultantMsg(txt) {
+  // Get the client message just before this consultant turn
+  const clientMsgs = state.history.filter(h=>h.role==='client');
+  const lastClient = clientMsgs.length > 0 ? clientMsgs[clientMsgs.length - 1] : null;
+  const clientCtx = lastClient ? lastClient.content : '(inizio simulazione — il consulente ha aperto la conversazione)';
+
+  const fasiRegole = {
+    approccio: `Stai valutando la fase di APPROCCIO secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Regole specifiche dell'approccio dal libro:
+- Il consulente NON deve mai usare parole che trasmettono inferiorità o disagio: "rubo", "disturbo", "scusi il disturbo", "minutini", "due minuti", "mi scusi", "le rubo del tempo"
+- Il consulente deve usare il CAMPO DI ASSENSO: iniziare con una domanda o affermazione a cui il cliente non può che rispondere sì (es. "Immagino che per lei la tranquillità della famiglia sia importante")
+- Il consulente deve trasmettere AUTOREVOLEZZA e LEADERSHIP — non chiedere permesso, non giustificarsi
+- Il consulente NON deve dire subito cosa vende o cosa vuole — deve prima creare curiosità e rapport
+- Frasi vietate: "sono qui per venderle", "volevo proporle", "passo per informarla", "ha un momento?"
+- L'obiettivo dell'approccio è ottenere l'appuntamento o l'apertura del cliente, non vendere il prodotto`,
+
+    intervista: `Stai valutando la fase di INTERVISTA secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Regole specifiche dell'intervista dal libro:
+- Il consulente deve fare DOMANDE APERTE (che iniziano con: cosa, come, quanto, quando, perché, in che modo) — NON domande chiuse a cui si risponde sì/no
+- Il consulente deve fare DOMANDE DI PRECISIONE quando il cliente usa parole vaghe (tanto, poco, sempre, mai, tranquillo, preoccupato, rischioso) — es: "Cosa intende esattamente per tranquillo?"
+- Il consulente deve ASCOLTARE senza interrompere e senza proporre soluzioni prima di aver capito tutto
+- Il consulente NON deve parlare del prodotto durante l'intervista
+- Il consulente deve scoprire: obiettivi del cliente, situazione attuale, preoccupazioni, valori
+- Vietato: proporre soluzioni, parlare di prodotti, fare monologhi, fare domande chiuse in serie`,
+
+    proposta: `Stai valutando la fase di PROPOSTA A 5 COLONNE secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Le 5 colonne della proposta dal libro:
+1. OBIETTIVO: riepilogare l'obiettivo del cliente usando le sue stesse parole
+2. AZIONE PRESENTE: descrivere cosa sta facendo attualmente il cliente (senza giudicarlo)
+3. CONDIZIONI DI PERDITA: evidenziare cosa rischia o perde con la situazione attuale
+4. PROPOSTA: presentare la soluzione in modo chiaro e semplice
+5. VANTAGGI: collegare i vantaggi specifici agli obiettivi dichiarati dal cliente (NON caratteristiche generiche)
+- Il consulente NON deve elencare caratteristiche tecniche senza collegarle ai bisogni del cliente
+- Vietato: presentare il prodotto senza aver riepilogato gli obiettivi, usare termini tecnici non spiegati`,
+
+    obiezioni: `Stai valutando la fase di GESTIONE OBIEZIONI secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Il metodo ARCO dal libro:
+A - ACCOGLI: accogliere l'obiezione senza contrastarla (es. "Capisco perfettamente", "Ha ragione di pensarci")
+R - RIFORMULA: riformulare l'obiezione con parole proprie per dimostrare comprensione
+C - CONDIVIDI: trovare un punto di accordo o condivisione con il cliente
+O - OFFRI SOLUZIONI: solo dopo i tre passi precedenti, proporre la risposta o soluzione
+- Vietato: rispondere subito all'obiezione senza prima accoglierla, contraddire il cliente, usare "però" o "ma" per rispondere, minimizzare la preoccupazione del cliente`
+  };
+
+  const regolaFase = fasiRegole[state.fase] || '';
+
+  const prompt = `${regolaFase}
+
+Il consulente ha detto: "${txt}"
+
+Valuta ESCLUSIVAMENTE la frase del consulente rispetto alle regole della fase descritte sopra.
+NON valutare se la domanda era opportuna rispetto al contesto. NON valutare la strategia complessiva.
+Valuta SOLO: la frase rispetta le regole tecniche della fase? Usa le parole giuste? Evita le parole vietate? Segue il metodo?
+
+Esempi corretti per la fase intervista: "Cosa intende esattamente per tranquillo?", "Quanto è importante per lei questo obiettivo?", "Come mai ha scelto questa soluzione finora?", "Quali sono i suoi obiettivi per i prossimi anni?" — tutte domande aperte, tutte CORRETTE.
+Esempi errati per la fase intervista: "Le propongo una polizza vita", "Ha mai pensato a una rendita?", "Si fida dello Stato?" — domande chiuse o proposte anticipate.
+
+Rispondi SOLO con JSON valido, nessun testo fuori:
+{"ok": true, "motivo": "in 1 frase concreta cosa ha fatto bene rispetto alle regole della fase"}
+oppure
+{"ok": false, "motivo": "in 1 frase concreta quale regola tecnica ha violato", "consiglio": "in 1 frase esempio concreto di come correggere"}`;
+
+  try {
+    const raw = await callAPI(null, [{role:"user", content:prompt}]);
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const ev = JSON.parse(clean);
+    const area = document.getElementById('chat-area');
+    const div = document.createElement('div');
+    div.className = 'msg system';
+    if (ev.ok) {
+      div.innerHTML = `<div class="rt-feedback ok"><strong>✅ Risposta corretta</strong>${ev.motivo}</div>`;
+    } else {
+      div.innerHTML = `<div class="rt-feedback err"><strong>❌ Risposta da migliorare</strong>${ev.motivo}<div class="retry-hint">💡 ${ev.consiglio}</div></div>`;
+    }
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  } catch(e) {
+    // Show error so we can debug
+    const area = document.getElementById('chat-area');
+    const div = document.createElement('div');
+    div.className = 'msg system';
+    div.innerHTML = `<div class="rt-feedback err"><strong>⚠️ Feedback non disponibile</strong>${e.message}</div>`;
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  }
+}
+
+document.getElementById('btn-hint').addEventListener('click', async () => {
+  if (state.isTyping) return;
+  const last = [...state.history].reverse().find(h=>h.role==='client');
+  if (!last) return;
+  const prompt = `Sei un coach di vendita basato sul metodo Sales Fitness e il libro Il Consulente Persuasivo di Luigi Predebon.
+Consulente di ${state.scenario.label}, fase "${FASE_LABELS[state.fase]}", prodotto: ${state.scenario.product}.
+Ultima frase del cliente: "${last.content}"
+Dai UN suggerimento pratico (max 2-3 frasi) indicando la tecnica specifica (campo di assenso, domanda aperta, valore universale, storytelling, 5 colonne, ARCO, ecc.). Inizia direttamente.`;
+  const t = addTyping('coach');
+  try { const r = await callAPI(null, [{role:"user",content:prompt}]); t.remove(); addMsg('coach','💡 '+r); }
+  catch(e){ t.remove(); addMsg('system','Errore suggerimento'); }
+});
+
+document.getElementById('btn-arco').addEventListener('click', async () => {
+  if (state.isTyping) return;
+  const last = [...state.history].reverse().find(h=>h.role==='client');
+  if (!last) return;
+  const prompt = `Sei un coach che insegna il metodo ARCO (Accogli, Riformula, Condividi, Offri soluzioni) del Sales Fitness.
+Obiezione/frase del cliente: "${last.content}"
+Mostra i 4 step ARCO applicati a questa frase specifica, con frasi esempio concrete. Breve e pratico.`;
+  const t = addTyping('coach');
+  try { const r = await callAPI(null, [{role:"user",content:prompt}]); t.remove(); addMsg('coach','⚡ ARCO:\n'+r); }
+  catch(e){ t.remove(); addMsg('system','Errore ARCO'); }
+});
+
+document.getElementById('btn-eval').addEventListener('click', evaluate);
+
+async function evaluate() {
+  if (state.history.length < 4) { addMsg('system','Conduci almeno qualche scambio prima di richiedere la valutazione.'); return; }
+  showScreen('result');
+  ['fb-main','fb-words','fb-exercise'].forEach(id => document.getElementById(id).textContent='Analisi in corso...');
+
+  const transcript = state.history.map(h=>`${h.role==='client'?'CLIENTE':'CONSULENTE'}: ${h.content}`).join('\n');
+  const evalPrompt = `Sei un coach di vendita esperto che analizza simulazioni usando il metodo Sales Fitness e il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Fase allenata: "${FASE_LABELS[state.fase]}", settore ${state.scenario.label}, prodotto: ${state.scenario.product}.
+
+TRASCRIZIONE:
+${transcript}
+
+Valuta su:
+- Approccio: campo di assenso, connessione situazionale, dichiarazione di vision, credibilità (cervello rettile)
+- Intervista: domande aperte, domande di precisione, ascolto attivo, scoperta del desiderio, riepilogo
+- Proposta 5 colonne: ha riepilogato obiettivi con le parole del cliente? Ha evidenziato le condizioni di perdita? Ha collegato proposta a vantaggi specifici? Ha distinto caratteristiche da vantaggi?
+- Obiezioni/Chiusura: metodo ARCO (Accogli Riformula Condividi Offri soluzioni), segnali acquisto, chiusura doppia scelta
+- Parole: usate bene (novità, vantaggio, risparmio, potente, risultato, libero, tu/ti)? Usate male (però, ma, disturbo, provo, sinceramente, credere, vorrei, mi scusi)?
+- 3 Cervelli: rettile (autorevolezza), limbico (emozioni/storytelling/valori), neocorteccia (logica/call to action)
+
+Rispondi SOLO con JSON valido:
+{"scores":{"approccio_rapport":<0-25>,"ascolto_domande":<0-25>,"gestione_obiezioni_ARCO":<0-25>,"parole_chiusura":<0-25>},"totale":<0-100>,"valutazione":"<eccellente|buono|sufficiente|da_migliorare>","cervelli":{"rettile":"<1 frase>","limbico":"<1 frase>","neocorteccia":"<1 frase>"},"parole_bene":"<2-3 esempi>","parole_correggere":"<2-3 errori>","punti_forza":"<2-3 frasi>","aree_miglioramento":"<2-3 frasi con riferimento al metodo>","esercizio":"<1 esercizio pratico specifico>"}`;
+
+  try {
+    const raw = (await callAPI(null, [{role:"user",content:evalPrompt}])).replace(/```json|```/g,'').trim();
+    renderResult(JSON.parse(raw));
+  } catch(e) { document.getElementById('fb-main').textContent = 'Errore nella valutazione. Riprova.'; }
+}
+
+function renderResult(ev) {
+  const total = ev.totale||0;
+  const el = document.getElementById('result-score');
+  el.textContent = total;
+  el.style.color = total>=75?'#34D399':total>=50?'#F5A623':'#FF6B35';
+  const lblMap = {eccellente:['nb-green','ECCELLENTE'],buono:['nb-green','BUONO'],sufficiente:['nb-gold','SUFFICIENTE'],da_migliorare:['nb-red','DA MIGLIORARE']};
+  const [bc,bl] = lblMap[ev.valutazione]||['nb-gold','—'];
+  document.getElementById('result-badge').innerHTML=`<span class="nav-badge ${bc}" style="font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:2px;">${bl}</span>`;
+
+  const sLabels={approccio_rapport:'Approccio e rapport',ascolto_domande:'Ascolto e domande',gestione_obiezioni_ARCO:'Obiezioni (ARCO)',parole_chiusura:'Parole e chiusura'};
+  const sColors={approccio_rapport:'#A78BFA',ascolto_domande:'#34D399',gestione_obiezioni_ARCO:'#FF6B35',parole_chiusura:'#F5A623'};
+  const sg=document.getElementById('score-grid'); sg.innerHTML='';
+  for(const[k,v] of Object.entries(ev.scores||{})){
+    const pct=Math.round((v/25)*100);
+    sg.innerHTML+=`<div class="score-card"><div class="sc-label">${sLabels[k]||k}</div><div class="sc-bar-wrap"><div class="sc-bar" style="width:${pct}%;background:${sColors[k]||'#FF6B35'}"></div></div><div class="sc-val">${v}<span style="font-size:14px;color:var(--text2)">/25</span></div></div>`;
+  }
+
+  const cr=document.getElementById('cervelli-row');
+  if(ev.cervelli){
+    cr.innerHTML=`<div style="width:100%;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">I 3 cervelli</div>
+    <span class="cervello-pill cp-rettile">🦎 Rettile — ${ev.cervelli.rettile||'—'}</span>
+    <span class="cervello-pill cp-limbico">❤️ Limbico — ${ev.cervelli.limbico||'—'}</span>
+    <span class="cervello-pill cp-neocortex">🧠 Neocorteccia — ${ev.cervelli.neocorteccia||'—'}</span>`;
+  }
+  document.getElementById('fb-main').innerHTML=`<strong>Punti di forza:</strong><br>${ev.punti_forza||'—'}<br><br><strong>Aree di miglioramento:</strong><br>${ev.aree_miglioramento||'—'}`;
+  document.getElementById('fb-words').innerHTML=`<strong style="color:#34D399">✓ Parole usate bene:</strong> ${ev.parole_bene||'—'}<br><br><strong style="color:#F87171">✗ Errori linguistici da correggere:</strong> ${ev.parole_correggere||'—'}`;
+  document.getElementById('fb-exercise').innerHTML=ev.esercizio||'—';
+}
+
+document.getElementById('btn-retry').addEventListener('click', startSim);
+document.getElementById('btn-new').addEventListener('click', () => {
+  state={ctx:null,prof:null,fase:null,diff:null,history:[],scenario:null,turns:0,isTyping:false};
+  document.querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('btn-start').disabled=true;
+  document.getElementById('nav-badges').innerHTML='';
+  showScreen('setup');
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function showScreen(name){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+name).classList.add('active'); }
+function renderChatHeader(){
+  document.getElementById('chat-header').innerHTML=`<span class="nav-badge nb-accent">${state.scenario.label}</span><span class="nav-badge nb-accent" style="font-family:'Oswald',sans-serif;letter-spacing:1px;">${FASE_LABELS[state.fase]}</span><span class="nav-badge ${DIFF_COLORS[state.diff]}">${DIFF_LABELS[state.diff]}</span><span class="product-tag">${state.scenario.product === "__consulenza__" ? "🔍 Modalità consulenza libera" : "📦 " + state.scenario.product}</span>`;
+  document.getElementById('nav-badges').innerHTML=`<span class="nav-badge nb-accent">${PROF_LABELS[state.prof]}</span><span class="nav-badge nb-gold">${FASE_LABELS[state.fase]}</span>`;
+}
+function addMsg(role,text){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  if(role==='coach'||role==='system'){ div.className=`msg ${role}`; div.innerHTML=`<div class="msg-bubble">${text}</div>`; }
+  else { div.className=`msg ${role==='client'?'client':'user'}`; const init=role==='client'?'CL':'TU'; const av=role==='client'?'av-client':'av-user'; div.innerHTML=`<div class="msg-av ${av}">${init}</div><div class="msg-bubble">${text}</div>`; }
+  area.appendChild(div); area.scrollTop=area.scrollHeight; return div;
+}
+function addTyping(){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className='msg client';
+  div.innerHTML=`<div class="msg-av av-client">CL</div><div class="msg-bubble"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  area.appendChild(div); area.scrollTop=area.scrollHeight; return div;
+}
+function updateTurnInfo(){ document.getElementById('turn-info').textContent=`Turni: ${state.turns} — premi 📊 per la valutazione`; }
+</script>
+</body>
+</html>
