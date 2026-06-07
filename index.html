@@ -163,6 +163,12 @@
   .consulenza-info { background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:var(--radius-lg); padding:1rem 1.2rem; }
   .consulenza-info p { font-size:13px; color:var(--gold); line-height:1.6; }
   .consulenza-info strong { color:var(--text); }
+  /* REAL-TIME FEEDBACK */
+  .rt-feedback { border-radius: var(--radius); padding: 10px 14px; font-size: 13px; line-height: 1.6; max-width: 100%; margin: 0; }
+  .rt-feedback.ok { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+  .rt-feedback.err { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.4); color: #FF9066; }
+  .rt-feedback strong { font-weight: 600; display: block; margin-bottom: 4px; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; font-size: 14px; }
+  .rt-feedback .retry-hint { margin-top: 6px; color: var(--text2); font-style: italic; }
   @media(max-width:600px){
     .grid-3,.grid-4{grid-template-columns:1fr 1fr;}
     .score-grid{grid-template-columns:1fr;}
@@ -506,6 +512,37 @@ async function sendUser() {
   if (!txt || state.isTyping) return;
   input.value = ''; addMsg('user', txt); state.turns++; updateTurnInfo();
   await runClient(buildChatSP(), txt);
+  // Real-time feedback on consultant's message
+  await checkConsultantMsg(txt);
+}
+
+async function checkConsultantMsg(txt) {
+  if (state.turns < 1) return;
+  const lastClient = [...state.history].filter(h=>h.role==='client').slice(-2,-1)[0];
+  const clientCtx = lastClient ? lastClient.content : '';
+  const prompt = `Sei un coach di vendita esperto basato sul metodo Sales Fitness e il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Fase allenata: "${FASE_LABELS[state.fase]}", settore: ${state.scenario.label}.
+
+Il cliente aveva detto: "${clientCtx}"
+Il consulente ha risposto: "${txt}"
+
+Valuta se la risposta del consulente è corretta rispetto al metodo (campo di assenso, domande aperte, domande di precisione, ARCO, parole positive, 5 colonne, ecc.).
+Rispondi SOLO con JSON: {"ok": true/false, "motivo": "<se ok: cosa ha fatto bene in 1 frase> / <se errato: cosa ha sbagliato in 1 frase concreta>", "consiglio": "<solo se errato: come avrebbe dovuto rispondere in 1 frase>"}`;
+  try {
+    const raw = await callAPI(null, [{role:"user", content:prompt}]);
+    const clean = raw.replace(/\`\`\`json|\`\`\`/g,'').trim();
+    const ev = JSON.parse(clean);
+    const area = document.getElementById('chat-area');
+    const div = document.createElement('div');
+    div.className = 'msg system';
+    if (ev.ok) {
+      div.innerHTML = `<div class="rt-feedback ok"><strong>✅ Risposta corretta</strong>${ev.motivo}</div>`;
+    } else {
+      div.innerHTML = `<div class="rt-feedback err"><strong>❌ Risposta da migliorare</strong>${ev.motivo}<div class="retry-hint">💡 ${ev.consiglio}</div></div>`;
+    }
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  } catch(e) { /* silently fail */ }
 }
 
 document.getElementById('btn-hint').addEventListener('click', async () => {
