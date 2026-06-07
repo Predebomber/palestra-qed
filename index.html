@@ -526,23 +526,57 @@ async function checkConsultantMsg(txt) {
   const lastClient = clientMsgs.length > 0 ? clientMsgs[clientMsgs.length - 1] : null;
   const clientCtx = lastClient ? lastClient.content : '(inizio simulazione — il consulente ha aperto la conversazione)';
 
-  const prompt = `Sei un coach di vendita esperto basato sul metodo Sales Fitness e il libro "Il Consulente Persuasivo" di Luigi Predebon.
-Fase allenata: "${FASE_LABELS[state.fase]}", settore: ${state.scenario.label}, profilo cliente: ${PROF_LABELS[state.prof]}.
+  const fasiRegole = {
+    approccio: `Stai valutando la fase di APPROCCIO secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Regole specifiche dell'approccio dal libro:
+- Il consulente NON deve mai usare parole che trasmettono inferiorità o disagio: "rubo", "disturbo", "scusi il disturbo", "minutini", "due minuti", "mi scusi", "le rubo del tempo"
+- Il consulente deve usare il CAMPO DI ASSENSO: iniziare con una domanda o affermazione a cui il cliente non può che rispondere sì (es. "Immagino che per lei la tranquillità della famiglia sia importante")
+- Il consulente deve trasmettere AUTOREVOLEZZA e LEADERSHIP — non chiedere permesso, non giustificarsi
+- Il consulente NON deve dire subito cosa vende o cosa vuole — deve prima creare curiosità e rapport
+- Frasi vietate: "sono qui per venderle", "volevo proporle", "passo per informarla", "ha un momento?"
+- L'obiettivo dell'approccio è ottenere l'appuntamento o l'apertura del cliente, non vendere il prodotto`,
+
+    intervista: `Stai valutando la fase di INTERVISTA secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Regole specifiche dell'intervista dal libro:
+- Il consulente deve fare DOMANDE APERTE (che iniziano con: cosa, come, quanto, quando, perché, in che modo) — NON domande chiuse a cui si risponde sì/no
+- Il consulente deve fare DOMANDE DI PRECISIONE quando il cliente usa parole vaghe (tanto, poco, sempre, mai, tranquillo, preoccupato, rischioso) — es: "Cosa intende esattamente per tranquillo?"
+- Il consulente deve ASCOLTARE senza interrompere e senza proporre soluzioni prima di aver capito tutto
+- Il consulente NON deve parlare del prodotto durante l'intervista
+- Il consulente deve scoprire: obiettivi del cliente, situazione attuale, preoccupazioni, valori
+- Vietato: proporre soluzioni, parlare di prodotti, fare monologhi, fare domande chiuse in serie`,
+
+    proposta: `Stai valutando la fase di PROPOSTA A 5 COLONNE secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Le 5 colonne della proposta dal libro:
+1. OBIETTIVO: riepilogare l'obiettivo del cliente usando le sue stesse parole
+2. AZIONE PRESENTE: descrivere cosa sta facendo attualmente il cliente (senza giudicarlo)
+3. CONDIZIONI DI PERDITA: evidenziare cosa rischia o perde con la situazione attuale
+4. PROPOSTA: presentare la soluzione in modo chiaro e semplice
+5. VANTAGGI: collegare i vantaggi specifici agli obiettivi dichiarati dal cliente (NON caratteristiche generiche)
+- Il consulente NON deve elencare caratteristiche tecniche senza collegarle ai bisogni del cliente
+- Vietato: presentare il prodotto senza aver riepilogato gli obiettivi, usare termini tecnici non spiegati`,
+
+    obiezioni: `Stai valutando la fase di GESTIONE OBIEZIONI secondo il libro "Il Consulente Persuasivo" di Luigi Predebon.
+Il metodo ARCO dal libro:
+A - ACCOGLI: accogliere l'obiezione senza contrastarla (es. "Capisco perfettamente", "Ha ragione di pensarci")
+R - RIFORMULA: riformulare l'obiezione con parole proprie per dimostrare comprensione
+C - CONDIVIDI: trovare un punto di accordo o condivisione con il cliente
+O - OFFRI SOLUZIONI: solo dopo i tre passi precedenti, proporre la risposta o soluzione
+- Vietato: rispondere subito all'obiezione senza prima accoglierla, contraddire il cliente, usare "però" o "ma" per rispondere, minimizzare la preoccupazione del cliente`
+  };
+
+  const regolaFase = fasiRegole[state.fase] || '';
+
+  const prompt = `${regolaFase}
 
 Il cliente aveva detto: "${clientCtx}"
 Il consulente ha risposto: "${txt}"
 
-Valuta SOLO la risposta del consulente rispetto al metodo QED:
-- Fase Approccio: usa campo di assenso? Evita parole negative (rubo, disturbo, scusi, minutini)? Trasmette autorevolezza?
-- Fase Intervista: fa domande aperte? Usa domande di precisione? Ascolta senza interrompere?
-- Fase Proposta: usa le 5 colonne? Collega ai bisogni del cliente? Distingue caratteristiche da vantaggi?
-- Fase Obiezioni: usa ARCO? Accoglie prima di rispondere?
-- In generale: usa parole positive (tu, vantaggio, risultato, opportunità)? Evita parole negative (però, ma, disturbo, provo, rubo, minutini, sinceramente)?
+Valuta ESCLUSIVAMENTE se la risposta del consulente rispetta le regole della fase descritte sopra. Non valutare altro.
 
 Rispondi SOLO con JSON valido, nessun testo fuori:
-{"ok": true, "motivo": "cosa ha fatto bene in 1 frase"}
+{"ok": true, "motivo": "in 1 frase concreta cosa ha fatto bene rispetto alle regole della fase"}
 oppure
-{"ok": false, "motivo": "cosa ha sbagliato in 1 frase concreta con riferimento al metodo", "consiglio": "come avrebbe dovuto rispondere in 1 frase esempio concreto"}`;
+{"ok": false, "motivo": "in 1 frase concreta quale regola ha violato e come", "consiglio": "in 1 frase un esempio concreto di come avrebbe dovuto rispondere"}`;
 
   try {
     const raw = await callAPI(null, [{role:"user", content:prompt}]);
