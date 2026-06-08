@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allenati alla Vendita™ · Metodo QED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1f3c;
+    --navy-mid: #1a3257;
+    --navy-light: #243d5e;
+    --gold: #c9a84c;
+    --gold-light: #e2c47a;
+    --gold-pale: #f5e9c8;
+    --cream: #faf6ef;
+    --white: #ffffff;
+    --text-main: #0d1f3c;
+    --text-muted: #5a6a7e;
+    --success-bg: #eef7ee;
+    --success-border: #4caf7d;
+    --error-bg: #fdf0ee;
+    --error-border: #e05a4b;
+    --radius: 10px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 2px solid var(--gold);
+    flex-shrink: 0;
+  }
+
+  .logo-mark {
+    width: 40px; height: 40px;
+    border: 2px solid var(--gold);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-mark span {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .header-text p {
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    background: var(--navy-mid);
+    padding: 6px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .status-pill {
+    font-size: 11px;
+    color: var(--gold-light);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    padding: 32px 28px;
+    max-width: 780px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border: 0.5px solid rgba(13,31,60,0.13);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 18px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .card-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    line-height: 1.55;
+  }
+
+  /* ── INPUTS ── */
+  input[type="password"],
+  input[type="text"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid rgba(13,31,60,0.2);
+    border-radius: 7px;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .error-msg {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 16px;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 7px;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 14px;
+    display: inline-block;
+  }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-gold:active { transform: scale(0.98); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1px solid rgba(13,31,60,0.28);
+    border-radius: 7px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-family: 'Source Sans 3', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── SECTOR GRID ── */
+  .sector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 4px;
+  }
+
+  .sector-btn {
+    background: var(--cream);
+    border: 1px solid rgba(13,31,60,0.14);
+    border-radius: 7px;
+    padding: 11px 13px;
+    text-align: left;
+    font-size: 13px;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .sector-btn:hover { border-color: var(--gold); background: var(--gold-pale); color: var(--navy); }
+
+  .sector-num {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+    min-width: 16px;
+  }
+
+  /* ── CLIENT CARD ── */
+  .client-card {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    color: var(--white);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--gold);
+  }
+  .client-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    margin-bottom: 4px;
+  }
+  .client-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.18);
+    color: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 2px 9px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .client-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .client-info-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .client-info-value {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ── CHAT ── */
+  .chat-container {
+    background: var(--white);
+    border: 0.5px solid rgba(13,31,60,0.12);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .chat-header {
+    background: var(--navy-mid);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chat-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+  .chat-header-name { font-size: 13px; color: var(--white); font-weight: 600; }
+  .chat-header-status { font-size: 11px; color: var(--gold-light); font-weight: 300; }
+
+  .chat-messages {
+    padding: 18px;
+    min-height: 220px;
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .msg { display: flex; flex-direction: column; max-width: 82%; }
+  .msg.client { align-self: flex-start; }
+  .msg.user { align-self: flex-end; }
+  .msg.system { align-self: stretch; max-width: 100%; }
+
+  .msg-label {
+    font-size: 10px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .msg.client .msg-label { color: var(--navy-mid); }
+  .msg.user .msg-label { color: var(--gold); text-align: right; }
+
+  .msg-bubble {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .msg.client .msg-bubble {
+    background: var(--cream);
+    border: 0.5px solid rgba(13,31,60,0.1);
+    color: var(--text-main);
+    border-radius: 2px 8px 8px 8px;
+  }
+  .msg.user .msg-bubble {
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 8px 2px 8px 8px;
+  }
+  .msg.system .msg-bubble {
+    border-radius: 8px;
+    font-size: 13px;
+    padding: 14px 16px;
+    line-height: 1.6;
+  }
+  .msg.system.correct .msg-bubble {
+    background: var(--success-bg);
+    border-left: 3px solid var(--success-border);
+    color: #2d6a4f;
+  }
+  .msg.system.incorrect .msg-bubble {
+    background: var(--error-bg);
+    border-left: 3px solid var(--error-border);
+    color: #7d1f1a;
+  }
+  .msg.system.info .msg-bubble {
+    background: rgba(201,168,76,0.08);
+    border-left: 3px solid var(--gold);
+    color: var(--text-main);
+  }
+
+  .chat-input-area {
+    border-top: 0.5px solid rgba(13,31,60,0.1);
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .chat-input-area textarea {
+    flex: 1;
+    resize: none;
+    height: 44px;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    margin-top: 0;
+  }
+  .btn-send {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    width: 44px; height: 44px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    transition: background 0.2s;
+  }
+  .btn-send:hover { background: var(--gold); color: var(--navy); }
+  .btn-send:disabled { opacity: 0.38; cursor: not-allowed; }
+
+  /* ── LOADING DOTS ── */
+  .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
+  .loading-dots span {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: db 1.2s ease-in-out infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes db {
+    0%,80%,100% { transform: scale(0.7); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ── ACTION ROW ── */
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ── SCORE TABLE ── */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 14px 0;
+  }
+  .score-table th {
+    background: var(--navy);
+    color: var(--gold-light);
+    padding: 9px 13px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .score-table td {
+    padding: 9px 13px;
+    border-bottom: 0.5px solid rgba(13,31,60,0.08);
+  }
+  .score-table tr:nth-child(even) td { background: var(--cream); }
+  .score-val { font-weight: 700; font-size: 15px; }
+  .score-high { color: #3d9a6e; }
+  .score-mid { color: #d4762a; }
+  .score-low { color: #c0392b; }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    border-radius: 7px;
+    padding: 8px 22px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 12px 0;
+  }
+
+  .divider { height: 0.5px; background: rgba(13,31,60,0.1); margin: 16px 0; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    border-top: 0.5px solid rgba(13,31,60,0.1);
+    flex-shrink: 0;
+  }
+
+  /* ── API KEY NOTICE ── */
+  .api-notice {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 7px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-main);
+    margin-bottom: 20px;
+    display: none;
+  }
+  .api-notice strong { color: var(--navy); }
+
+  @media (max-width: 600px) {
+    .main { padding: 20px 16px; }
+    .header { padding: 14px 16px; }
+    .sector-grid { grid-template-columns: 1fr; }
+    .client-info { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark"><span>QED</span></div>
+  <div class="header-text">
+    <h1>Allenati alla Vendita™</h1>
+    <p>Metodo QED · Il Consulente Persuasivo</p>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-pill">
+    <span class="status-dot"></span>
+    <span id="statusText">Accesso richiesto</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SCREEN: PASSWORD -->
+  <div id="screen-password" class="screen active">
+    <div class="card">
+      <div class="card-title">Accesso alla Palestra</div>
+      <div class="card-sub">Inserisci la password per accedere all'ambiente di simulazione commerciale basato sul Metodo QED.</div>
+      <div class="api-notice" id="apiNotice">
+        <strong>Configurazione richiesta:</strong> per il funzionamento autonomo inserisci la tua API key Anthropic nel campo dedicato nelle impostazioni (vedi README).
+      </div>
+      <input type="password" id="pwdInput" placeholder="Password di accesso" maxlength="30" />
+      <div class="error-msg" id="pwdError">Password non corretta. Riprova.</div>
+      <br>
+      <button class="btn-primary" onclick="checkPassword()">Accedi</button>
+    </div>
+
+  </div>
+
+  <!-- SCREEN: SECTOR -->
+  <div id="screen-sector" class="screen">
+    <div class="card">
+      <div class="card-title">Scegli il tuo settore</div>
+      <div class="card-sub">Il cliente simulato sarà costruito in modo realistico e coerente con il settore selezionato.</div>
+      <div class="sector-grid" id="sectorGrid"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN: SIM -->
+  <div id="screen-sim" class="screen">
+    <div id="clientCardContainer"></div>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar" id="chatAvatar">?</div>
+        <div>
+          <div class="chat-header-name" id="chatName">Cliente</div>
+          <div class="chat-header-status">Simulazione in corso</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <textarea id="userInput" placeholder="La tua risposta al cliente..." rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="btn-send" id="sendBtn" onclick="sendMessage()" title="Invia">
+          <i class="ti ti-arrow-up"></i>
+        </button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button class="btn-outline" onclick="endSim()">Termina e valuta</button>
+      <button class="btn-outline" onclick="resetAll()">Nuova sessione</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: RESULT -->
+  <div id="screen-result" class="screen">
+    <div id="resultContent"></div>
+    <button class="btn-gold" onclick="resetAll()">Nuova sessione</button>
+  </div>
+
+</div>
+
+<div class="footer">© Metodo QED · Luigi Amedeo Izzo · Allenati alla Vendita™</div>
+
+<script>
+const SECTORS = [
+  'Assicurazioni','Bancario e finanziario','Immobiliare','Automotive',
+  'Energia e utility','Formazione','Consulenza aziendale','Telefonia',
+  'Software e tecnologia','Retail','Sanità','Turismo','Altro'
+];
+
+const PASSWORD = 'Prede56';
+
+const SYSTEM_PROMPT = `Sei "Allenati alla Vendita™", una palestra professionale di simulazione commerciale basata sui principi del libro "Il Consulente Persuasivo" di Luigi Amedeo Izzo e Maurizio Fanti.
+
+Il tuo compito è allenare il consulente a: creare fiducia, costruire il patto iniziale, scoprire bisogni espliciti e impliciti, formulare domande efficaci, usare linguaggio positivo, guidare senza pressione, presentare soluzioni coerenti, gestire obiezioni e concludere in modo consulenziale.
+
+REGOLE FONDAMENTALI:
+- Sei sia il cliente simulato SIA il valutatore
+- Il cliente ha una scheda interna (bisogni nascosti, paure, obiezioni potenziali) che NON devi mai rivelare direttamente
+- Le informazioni emergono SOLO attraverso domande ben formulate dal consulente
+- Il cliente è realistico: può essere diffidente, razionale, emotivo, sintetico, indeciso
+
+FORMATO RISPOSTA:
+Per ogni messaggio del consulente, rispondi SEMPRE in questo ordine:
+
+1. VALUTAZIONE (prima del cliente):
+   - Se corretto: scrivi "✅ CORRETTO" poi spiega brevemente quale principio è stato applicato e che effetto produce sul cliente. Poi scrivi "💡 Miglioramento possibile:" e suggerisci una versione ancora più persuasiva.
+   - Se non corretto: scrivi "❌ NON CORRETTO" poi indica: quale principio è violato, perché non è efficace, quale rischio comporta, cosa avrebbe dovuto fare. Poi scrivi "Prova nuovamente." e NON rispondere come cliente finché il consulente non corregge.
+   - Se presenta la soluzione troppo presto: scrivi "❌ NON CORRETTO - Presentazione prematura della soluzione" e invita a continuare la fase di scoperta.
+
+2. RISPOSTA DEL CLIENTE (solo dopo valutazione positiva):
+   Scrivi "👤 [Nome cliente]:" e poi la risposta realistica del cliente.
+
+IMPORTANTE: Non facilitare il consulente. Non regalare informazioni non richieste.`;
+
+let state = {
+  sector: '', clientName: '', clientInitials: '',
+  messages: [], simStarted: false, loading: false
+};
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function setStatus(text) {
+  document.getElementById('statusText').textContent = text;
+}
+
+function checkPassword() {
+  const val = document.getElementById('pwdInput').value.trim();
+  const err = document.getElementById('pwdError');
+  if (val === PASSWORD) {
+    err.style.display = 'none';
+      setStatus('Autenticato · Scegli settore');
+    buildSectorGrid();
+    showScreen('sector');
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+  }
+}
+
+document.getElementById('pwdInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function buildSectorGrid() {
+  const grid = document.getElementById('sectorGrid');
+  grid.innerHTML = '';
+  SECTORS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sector-btn';
+    btn.innerHTML = `<span class="sector-num">${i+1}</span>${s}`;
+    btn.onclick = () => startSim(s);
+    grid.appendChild(btn);
+  });
+}
+
+async function startSim(sector) {
+  state.sector = sector;
+  setStatus('Generazione cliente · ' + sector);
+  showScreen('sim');
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('clientCardContainer').innerHTML = '';
+  state.messages = [];
+
+  const initPrompt = `Il consulente ha scelto il settore: "${sector}".
+
+Genera un cliente realistico per questo settore. Mostra SOLO:
+- Nome e cognome
+- Età
+- Professione
+- Stato civile
+- Nucleo familiare
+
+Poi, nella stessa risposta, inizia la simulazione con un saluto del cliente (breve, realistico, può essere collaborativo, diffidente o neutro).
+
+Formato risposta:
+SCHEDA CLIENTE:
+[dati visibili]
+
+---
+👤 [Nome]: [saluto iniziale]`;
+
+  addLoadingMsg();
+  try {
+    const resp = await callClaude(initPrompt, true);
+    removeLoading();
+    parseAndDisplayInit(resp);
+  } catch(e) {
+    removeLoading();
+    addSystemMsg('Errore di connessione. Verifica la API key e riprova.', 'info');
+  }
+}
+
+function parseAndDisplayInit(text) {
+  const lines = text.split('\n');
+  let scheda = '', greeting = '';
+  let inScheda = false, afterDivider = false;
+
+  for (const line of lines) {
+    if (line.includes('SCHEDA CLIENTE')) { inScheda = true; continue; }
+    if (line.includes('---')) { inScheda = false; afterDivider = true; continue; }
+    if (inScheda) scheda += line + '\n';
+    if (afterDivider && line.trim()) greeting += line + ' ';
+  }
+
+  const nameMatch = scheda.match(/(?:Nome[^:]*:|^)([A-Z][a-zàèéìòùü]+\s+[A-Z][a-zàèéìòùü]+)/m);
+  if (nameMatch) {
+    state.clientName = nameMatch[1].trim();
+    const parts = state.clientName.split(' ');
+    state.clientInitials = (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  } else {
+    state.clientName = 'Cliente';
+    state.clientInitials = 'CL';
+  }
+
+  document.getElementById('chatAvatar').textContent = state.clientInitials;
+  document.getElementById('chatName').textContent = state.clientName;
+  buildClientCard(scheda);
+
+  const greetingClean = greeting.replace(/^👤[^:]*:/, '').trim();
+  if (greetingClean) {
+    addClientMsg(greetingClean);
+    state.messages.push({ role: 'assistant', content: text });
+  }
+
+  setStatus('Simulazione · ' + state.sector + ' · ' + state.clientName);
+  state.simStarted = true;
+}
+
+function buildClientCard(scheda) {
+  const lines = scheda.split('\n').filter(l => l.trim());
+  let html = `<div class="client-card">
+    <div class="client-tag">Cliente simulato · ${state.sector}</div>
+    <h3>${state.clientName}</h3>
+    <div class="client-info">`;
+
+  lines.forEach(line => {
+    const parts = line.split(':');
+    if (parts.length >= 2) {
+      const label = parts[0].trim();
+      const value = parts.slice(1).join(':').trim();
+      if (value && !label.toLowerCase().includes('nome')) {
+        html += `<div><div class="client-info-label">${label}</div>
+          <div class="client-info-value">${value}</div></div>`;
+      }
+    }
+  });
+
+  html += `</div></div>`;
+  document.getElementById('clientCardContainer').innerHTML = html;
+}
+
+function addClientMsg(text) { addMsg('client', state.clientName, text); }
+function addUserMsg(text) { addMsg('user', 'Tu (consulente)', text); }
+
+function addSystemMsg(text, type) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg system ${type}`;
+  div.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMsg(type, label, text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  div.innerHTML = `<div class="msg-label">${label}</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addLoadingMsg() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg client';
+  div.id = 'loadingMsg';
+  div.innerHTML = `<div class="msg-label">&nbsp;</div><div class="msg-bubble"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeLoading() {
+  const el = document.getElementById('loadingMsg');
+  if (el) el.remove();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = '44px';
+  el.style.height = Math.min(el.scrollHeight, 130) + 'px';
+}
+
+async function sendMessage() {
+  if (state.loading) return;
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = '44px';
+  addUserMsg(text);
+  state.messages.push({ role: 'user', content: text });
+  state.loading = true;
+  document.getElementById('sendBtn').disabled = true;
+  addLoadingMsg();
+
+  try {
+    const reply = await callClaude(null, false);
+    removeLoading();
+    state.messages.push({ role: 'assistant', content: reply });
+    parseSimResponse(reply);
+  } catch(e) {
+    removeLoading();
+    addSystemMsg('Errore di connessione. Verifica la API key e riprova.', 'info');
+  }
+
+  state.loading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function parseSimResponse(text) {
+  const hasCorrect = text.includes('✅');
+  const hasIncorrect = text.includes('❌');
+  const clientAfter = text.match(/👤[^:]*:([\s\S]+)$/);
+
+  if (hasIncorrect) {
+    const evalPart = text.replace(/👤[^:]*:[\s\S]*$/, '').trim();
+    addSystemMsg(evalPart, 'incorrect');
+  } else if (hasCorrect) {
+    const evalEnd = text.indexOf('👤');
+    const evalPart = evalEnd > 0 ? text.substring(0, evalEnd).trim() : text;
+    addSystemMsg(evalPart, 'correct');
+    if (clientAfter) {
+      const clientText = clientAfter[1].trim();
+      if (clientText) addClientMsg(clientText);
+    }
+  } else {
+    if (clientAfter) {
+      const clientText = clientAfter[1].trim();
+      if (clientText) addClientMsg(clientText);
+    } else {
+      addSystemMsg(text, 'info');
+    }
+  }
+}
+
+async function endSim() {
+  if (state.loading) return;
+  state.loading = true;
+  const endPrompt = `La simulazione è terminata. Fornisci la VALUTAZIONE FINALE completa.
+
+Struttura la risposta esattamente così:
+
+PUNTEGGI (da 1 a 10):
+- Costruzione del patto: X/10
+- Qualità delle domande: X/10
+- Scoperta dei bisogni: X/10
+- Ascolto: X/10
+- Comunicazione persuasiva: X/10
+- Gestione delle obiezioni: X/10
+- Presentazione della soluzione: X/10
+- Chiusura: X/10
+- MEDIA FINALE: X/10
+
+LIVELLO: [Principiante / Base / Intermedio / Avanzato / Consulente Persuasivo]
+
+PUNTI DI FORZA:
+[elenco]
+
+PUNTI DA MIGLIORARE:
+[elenco]
+
+ERRORI PRINCIPALI:
+[elenco]
+
+COSA ALLENARE DI PIÙ:
+[indicazione concreta]`;
+
+  state.messages.push({ role: 'user', content: endPrompt });
+  addLoadingMsg();
+
+  try {
+    const reply = await callClaude(null, false);
+    removeLoading();
+    showResult(reply);
+  } catch(e) {
+    removeLoading();
+    addSystemMsg('Errore durante la valutazione. Riprova.', 'info');
+  }
+  state.loading = false;
+}
+
+function showResult(text) {
+  showScreen('result');
+  const container = document.getElementById('resultContent');
+
+  const scoreRegex = /[-•]\s*([^:]+):\s*(\d+(?:\.\d+)?)\/10/g;
+  const scores = [];
+  let m;
+  while ((m = scoreRegex.exec(text)) !== null) {
+    scores.push({ label: m[1].trim(), val: parseFloat(m[2]) });
+  }
+
+  const levelMatch = text.match(/LIVELLO:\s*([^\n]+)/);
+  const level = levelMatch ? levelMatch[1].trim() : '';
+  const strengthMatch = text.match(/PUNTI DI FORZA:([\s\S]*?)(?=PUNTI DA MIGLIORARE|$)/);
+  const improveMatch = text.match(/PUNTI DA MIGLIORARE:([\s\S]*?)(?=ERRORI PRINCIPALI|$)/);
+  const errorsMatch = text.match(/ERRORI PRINCIPALI:([\s\S]*?)(?=COSA ALLENARE|$)/);
+  const trainMatch = text.match(/COSA ALLENARE[^:]*:([\s\S]*?)$/);
+
+  let tableRows = '';
+  scores.forEach(s => {
+    const cls = s.val >= 7 ? 'score-high' : s.val >= 5 ? 'score-mid' : 'score-low';
+    const bold = s.label.toLowerCase().includes('media') ? 'font-weight:700' : '';
+    tableRows += `<tr><td style="${bold}">${s.label}</td><td><span class="score-val ${cls}">${s.val}/10</span></td></tr>`;
+  });
+
+  const fmt = txt => {
+    if (!txt) return '';
+    return txt.trim().split('\n').filter(l => l.trim()).map(l =>
+      `<div style="margin-bottom:5px;font-size:13px;line-height:1.55;color:var(--text-main)">${l.replace(/^[-•]\s*/, '· ')}</div>`
+    ).join('');
+  };
+
+  container.innerHTML = `
+    <div class="card">
+      <div class="card-title">Valutazione Finale</div>
+      <div class="card-sub">${state.sector} · ${state.clientName}</div>
+      ${level ? `<div class="level-badge">${level}</div>` : ''}
+      <div class="divider"></div>
+      <div class="section-label">Punteggi per area</div>
+      <table class="score-table">
+        <thead><tr><th>Area</th><th>Voto</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+      ${strengthMatch ? `<div class="divider"></div><div class="section-label">Punti di forza</div>${fmt(strengthMatch[1])}` : ''}
+      ${improveMatch ? `<div class="divider"></div><div class="section-label">Punti da migliorare</div>${fmt(improveMatch[1])}` : ''}
+      ${errorsMatch ? `<div class="divider"></div><div class="section-label">Errori principali</div>${fmt(errorsMatch[1])}` : ''}
+      ${trainMatch ? `<div class="divider"></div><div class="section-label">Cosa allenare di più</div><div style="font-size:13px;line-height:1.55">${trainMatch[1].trim()}</div>` : ''}
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;letter-spacing:0.5px">Allenamento completato · Metodo QED</div>
+    </div>`;
+
+  setStatus('Valutazione completata');
+}
+
+function resetAll() {
+  state = { sector:'', clientName:'', clientInitials:'', messages:[], simStarted:false, loading:false };
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('clientCardContainer').innerHTML = '';
+  document.getElementById('pwdInput').value = '';
+  setStatus('Accesso richiesto');
+  showScreen('password');
+}
+
+async function callClaude(userOverride, isInit) {
+
+  let msgs = isInit
+    ? [{ role: 'user', content: userOverride }]
+    : state.messages.slice();
+
+  const response = await fetch('https://palestra-qed.luigipredebon.workers.dev/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM_PROMPT,
+      messages: msgs
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'API error');
+  }
+  const data = await response.json();
+  return data.content.map(b => b.text || '').join('');
+}
+</script>
+</body>
+</html>
