@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allenati alla Vendita™ · Metodo QED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --navy: #0b1c36;
+  --navy-mid: #162d50;
+  --navy-light: #1e3d6e;
+  --gold: #c9a84c;
+  --gold-light: #e2c47a;
+  --gold-pale: #f7eedb;
+  --gold-glow: rgba(201,168,76,0.15);
+  --cream: #faf7f2;
+  --white: #ffffff;
+  --text: #0b1c36;
+  --muted: #6b7a90;
+  --ok: #2d7a5f;
+  --ok-bg: #edf7f3;
+  --err: #b83c2e;
+  --err-bg: #fdf0ee;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);}
+body{display:flex;flex-direction:column;min-height:100vh;}
+
+.hdr{background:var(--navy);padding:0 28px;height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.6);flex-shrink:0;position:relative;}
+.hdr::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4;}
+.hdr-brand{display:flex;align-items:center;gap:14px;}
+.qed-mark{width:40px;height:40px;border:1.5px solid var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;background:var(--gold-glow);flex-shrink:0;}
+.qed-mark span{font-family:'Playfair Display',serif;color:var(--gold);font-size:13px;font-weight:700;letter-spacing:1.5px;}
+.hdr-name{font-family:'Playfair Display',serif;color:var(--white);font-size:16px;font-weight:700;}
+.hdr-tagline{color:rgba(226,196,122,0.7);font-size:10px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;margin-top:2px;}
+.hdr-badge{background:var(--gold-glow);border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--gold-light);font-weight:500;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:#5dbb8a;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(93,187,138,0.6);}50%{box-shadow:0 0 0 4px rgba(93,187,138,0);}}
+
+.sbar{background:var(--navy-mid);padding:0 28px;height:30px;display:flex;align-items:center;gap:6px;border-bottom:0.5px solid rgba(201,168,76,0.2);flex-shrink:0;}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.stxt{font-size:10px;color:rgba(226,196,122,0.8);letter-spacing:2px;text-transform:uppercase;font-weight:500;}
+
+.scr{display:none;flex:1;flex-direction:column;}
+.scr.active{display:flex;}
+
+.pw-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 24px;}
+.pw-box{background:var(--white);border:0.5px solid rgba(11,28,54,0.1);border-radius:16px;padding:36px 32px;width:100%;max-width:440px;box-shadow:0 4px 24px rgba(11,28,54,0.06);}
+.pw-kicker{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.pw-kicker::before{content:'';width:24px;height:1px;background:var(--gold);display:block;}
+.pw-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);margin-bottom:8px;line-height:1.25;}
+.pw-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+.pw-field{position:relative;margin-bottom:8px;}
+.pw-field input{width:100%;background:var(--cream);border:1px solid rgba(11,28,54,0.15);border-radius:10px;padding:13px 48px 13px 18px;font-size:16px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;transition:border-color 0.2s,box-shadow 0.2s;letter-spacing:4px;}
+.pw-field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);}
+.pw-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--gold);opacity:0.7;font-size:18px;pointer-events:none;}
+.pw-err{font-size:12px;color:var(--err);margin-bottom:14px;display:none;padding-left:2px;}
+.btn-cta{width:100%;background:var(--navy);color:var(--white);border:none;border-radius:10px;padding:14px;font-size:15px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;letter-spacing:0.3px;transition:background 0.2s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.btn-cta:hover{background:var(--navy-light);}
+.btn-cta:active{transform:scale(0.99);}
+.pw-features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px;padding-top:24px;border-top:0.5px solid rgba(11,28,54,0.08);}
+.pw-feat{text-align:center;}
+.pw-feat-ico{font-size:20px;color:var(--gold);margin-bottom:6px;opacity:0.9;}
+.pw-feat-lbl{font-size:11px;color:var(--muted);line-height:1.4;font-weight:500;}
+
+.sec-wrap{flex:1;padding:24px;}
+.sec-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);}
+.sec-sub{font-size:13px;color:var(--muted);margin-top:3px;margin-bottom:20px;}
+.sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.sec-btn{background:var(--white);border:0.5px solid rgba(11,28,54,0.12);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;position:relative;overflow:hidden;}
+.sec-btn::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--gold);transition:height 0.2s;border-radius:0 0 2px 0;}
+.sec-btn:hover{border-color:rgba(201,168,76,0.5);background:var(--gold-pale);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,0.15);}
+.sec-btn:hover::before{height:100%;}
+.sec-n{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:0.5px;}
+.sec-name{font-size:12px;color:var(--navy);font-weight:600;line-height:1.3;}
+
+.sim-wrap{flex:1;padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px;}
+.cli-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:14px;padding:18px 20px;border:0.5px solid rgba(201,168,76,0.3);display:flex;align-items:flex-start;gap:14px;position:relative;overflow:hidden;}
+.cli-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.12),transparent 70%);}
+.cli-ava{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.cli-info{flex:1;min-width:0;}
+.cli-tag{display:inline-block;background:rgba(201,168,76,0.15);color:var(--gold-light);border:0.5px solid rgba(201,168,76,0.35);border-radius:4px;font-size:9px;padding:2px 7px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;font-weight:500;}
+.cli-name{font-family:'Playfair Display',serif;font-size:17px;color:var(--white);margin-bottom:6px;}
+.cli-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cli-lbl{font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:1px;}
+.cli-val{font-size:12px;color:rgba(255,255,255,0.85);font-weight:500;}
+
+.chat-box{flex:1;background:var(--white);border:0.5px solid rgba(11,28,54,0.1);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;}
+.chat-hdr{background:var(--navy-mid);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.chat-hdr-l{display:flex;align-items:center;gap:10px;}
+.chat-hdr-ava{width:30px;height:30px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.chat-hdr-name{font-size:13px;color:var(--white);font-weight:600;}
+.chat-hdr-st{font-size:10px;color:rgba(226,196,122,0.6);}
+.live-tag{font-size:10px;color:rgba(226,196,122,0.7);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+.ldot{width:5px;height:5px;border-radius:50%;background:#5dbb8a;animation:pulse 2s infinite;}
+
+.chat-msgs{flex:1;padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;min-height:200px;max-height:380px;}
+.msg{display:flex;flex-direction:column;max-width:78%;}
+.msg.cli{align-self:flex-start;}
+.msg.usr{align-self:flex-end;}
+.msg.sys{align-self:stretch;max-width:100%;}
+.msg-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-weight:700;}
+.msg.cli .msg-lbl{color:var(--muted);}
+.msg.usr .msg-lbl{color:rgba(201,168,76,0.8);text-align:right;}
+.msg-bub{padding:10px 14px;font-size:13.5px;line-height:1.6;}
+.msg.cli .msg-bub{background:var(--cream);border:0.5px solid rgba(11,28,54,0.08);color:var(--text);border-radius:3px 12px 12px 12px;}
+.msg.usr .msg-bub{background:var(--navy);color:var(--white);border-radius:12px 3px 12px 12px;}
+.msg.sys .msg-bub{border-radius:10px;font-size:13px;padding:13px 15px;line-height:1.65;}
+.msg.sys.ok .msg-bub{background:var(--ok-bg);border-left:3px solid #4caf7d;color:var(--ok);}
+.msg.sys.no .msg-bub{background:var(--err-bg);border-left:3px solid #e05a4b;color:var(--err);}
+.msg.sys.info .msg-bub{background:var(--gold-glow);border-left:3px solid var(--gold);color:var(--text);}
+
+.chat-inp{border-top:0.5px solid rgba(11,28,54,0.08);padding:10px 14px;display:flex;gap:8px;align-items:flex-end;background:rgba(250,247,242,0.6);flex-shrink:0;}
+.chat-inp textarea{flex:1;resize:none;height:40px;background:var(--white);border:0.5px solid rgba(11,28,54,0.18);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
+.chat-inp textarea:focus{border-color:var(--gold);}
+.btn-snd{background:var(--navy);color:var(--white);border:none;border-radius:8px;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background 0.2s;flex-shrink:0;}
+.btn-snd:hover{background:var(--gold);color:var(--navy);}
+.btn-snd:disabled{opacity:0.35;cursor:not-allowed;}
+.acts{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
+.btn-sec{background:var(--white);color:var(--navy);border:0.5px solid rgba(11,28,54,0.2);border-radius:8px;padding:9px 18px;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-sec:hover{border-color:var(--gold);color:#8b6914;background:var(--gold-pale);}
+
+.res-wrap{flex:1;padding:20px;overflow-y:auto;}
+.res-card{background:var(--white);border:0.5px solid rgba(11,28,54,0.1);border-radius:16px;padding:26px;}
+.res-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px;}
+.res-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:4px;}
+.res-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.lvl-badge{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--gold);border:1.5px solid var(--gold);border-radius:8px;padding:9px 22px;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+.div{height:0.5px;background:rgba(11,28,54,0.07);margin:16px 0;}
+.sec-lbl2{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;}
+.sc-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:2px;}
+.sc-table th{background:var(--navy);color:rgba(226,196,122,0.85);padding:8px 12px;text-align:left;font-weight:500;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.sc-table td{padding:8px 12px;border-bottom:0.5px solid rgba(11,28,54,0.06);font-size:13px;}
+.sc-table tr:nth-child(even) td{background:var(--cream);}
+.sv{font-weight:700;font-size:14px;}
+.sv.hi{color:var(--ok);}
+.sv.md{color:#c47a2a;}
+.sv.lo{color:var(--err);}
+.fb-list{list-style:none;}
+.fb-list li{font-size:13px;line-height:1.6;color:var(--text);padding:4px 0;display:flex;gap:8px;align-items:flex-start;}
+.fb-list li::before{content:"›";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+.btn-new{background:var(--gold);color:var(--navy);border:none;border-radius:10px;padding:13px 28px;font-size:14px;font-family:'Inter',sans-serif;font-weight:700;cursor:pointer;transition:background 0.2s;margin-top:20px;display:inline-flex;align-items:center;gap:8px;}
+.btn-new:hover{background:var(--gold-light);}
+
+.dots{display:inline-flex;gap:3px;align-items:center;}
+.dots span{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:db 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+.ftr{text-align:center;padding:14px;font-size:10px;color:rgba(107,122,144,0.7);letter-spacing:1px;border-top:0.5px solid rgba(11,28,54,0.07);flex-shrink:0;}
+
+@media(max-width:600px){
+  .sec-grid{grid-template-columns:1fr 1fr;}
+  .pw-features{grid-template-columns:1fr;}
+  .hdr{padding:0 16px;}
+  .sim-wrap{padding:12px 14px 16px;}
+}
+</style>
+</head>
+<body>
+
+<div id="app" style="display:flex;flex-direction:column;min-height:100vh;">
+
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="qed-mark"><span>QED</span></div>
+    <div>
+      <div class="hdr-name">Allenati alla Vendita™</div>
+      <div class="hdr-tagline">Metodo QED · Il Consulente Persuasivo</div>
+    </div>
+  </div>
+  <div class="hdr-badge"><div class="pulse-dot"></div>Simulatore AI</div>
+</div>
+
+<div class="sbar"><div class="sdot"></div><div class="stxt" id="stxt">Accesso richiesto</div></div>
+
+<!-- PASSWORD -->
+<div id="s-pw" class="scr active">
+  <div class="pw-wrap">
+    <div class="pw-box">
+      <div class="pw-kicker">Accesso sicuro</div>
+      <div class="pw-title">Benvenuto nella Palestra</div>
+      <div class="pw-desc">Un simulatore professionale di vendita consulenziale. Affronta clienti reali, ricevi feedback istantaneo, misura la tua crescita.</div>
+      <div class="pw-field">
+        <input type="password" id="pwdInput" placeholder="Password di accesso" maxlength="30" />
+        <i class="ti ti-lock pw-icon"></i>
+      </div>
+      <div class="pw-err" id="pwdError">Password non corretta. Riprova.</div>
+      <button class="btn-cta" onclick="checkPwd()">Accedi alla Palestra <i class="ti ti-arrow-right"></i></button>
+      <div class="pw-features">
+        <div class="pw-feat"><div class="pw-feat-ico"><i class="ti ti-brain"></i></div><div class="pw-feat-lbl">Feedback in tempo reale</div></div>
+        <div class="pw-feat"><div class="pw-feat-ico"><i class="ti ti-users"></i></div><div class="pw-feat-lbl">Clienti simulati realistici</div></div>
+        <div class="pw-feat"><div class="pw-feat-ico"><i class="ti ti-trophy"></i></div><div class="pw-feat-lbl">Valutazione su 8 aree</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr">© Luigi Predebon · Metodo QED · Allenati alla Vendita™</div>
+</div>
+
+<!-- SECTOR -->
+<div id="s-sec" class="scr">
+  <div class="sec-wrap">
+    <div class="sec-kicker">Configurazione sessione</div>
+    <div class="sec-title">In quale settore operi?</div>
+    <div class="sec-sub">Il cliente sarà costruito in modo realistico e coerente con il tuo mercato.</div>
+    <div class="sec-grid" id="secGrid"></div>
+  </div>
+  <div class="ftr">© Luigi Predebon · Metodo QED · Allenati alla Vendita™</div>
+</div>
+
+<!-- SIM -->
+<div id="s-sim" class="scr">
+  <div class="sim-wrap">
+    <div id="cliCard"></div>
+    <div class="chat-box">
+      <div class="chat-hdr">
+        <div class="chat-hdr-l">
+          <div class="chat-hdr-ava" id="chatAva">?</div>
+          <div>
+            <div class="chat-hdr-name" id="chatName">Cliente</div>
+            <div class="chat-hdr-st">Simulazione attiva</div>
+          </div>
+        </div>
+        <div class="live-tag"><div class="ldot"></div>Live</div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-inp">
+        <textarea id="userIn" placeholder="La tua risposta al cliente…" rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+        <button class="btn-snd" id="sndBtn" onclick="send()" title="Invia"><i class="ti ti-arrow-up"></i></button>
+      </div>
+    </div>
+    <div class="acts">
+      <button class="btn-sec" onclick="endSim()"><i class="ti ti-chart-bar"></i>Termina e valuta</button>
+      <button class="btn-sec" onclick="reset()"><i class="ti ti-refresh"></i>Nuova sessione</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="s-res" class="scr">
+  <div class="res-wrap">
+    <div class="res-card" id="resContent"></div>
+    <button class="btn-new" onclick="reset()"><i class="ti ti-refresh"></i>Nuova sessione</button>
+  </div>
+  <div class="ftr">© Luigi Predebon · Metodo QED · Allenati alla Vendita™</div>
+</div>
+
+</div>
+
+<script>
+const SECTS=['Assicurazioni','Bancario e finanziario','Immobiliare','Automotive','Energia e utility','Formazione','Consulenza aziendale','Telefonia','Software e tecnologia','Retail','Sanità','Turismo','Altro'];
+
+const SYS=`Sei "Allenati alla Vendita™", una palestra di simulazione commerciale basata sul libro "Il Consulente Persuasivo" di Luigi Predebon e Maurizio Fanti.
+
+Allena il consulente su: fiducia, patto iniziale, bisogni espliciti/impliciti, domande efficaci, linguaggio positivo, guida senza pressione, soluzioni coerenti, obiezioni, chiusura consulenziale.
+
+REGOLE:
+- Sei cliente simulato E valutatore
+- La scheda interna del cliente NON si rivela mai direttamente
+- Le info emergono solo da domande ben formulate
+- Il cliente è realistico: diffidente, razionale, emotivo, sintetico o indeciso
+
+FORMATO — SEMPRE in quest'ordine:
+1. VALUTAZIONE:
+   ✅ CORRETTO → principio applicato + effetto + "💡 Miglioramento possibile:" con versione più persuasiva
+   ❌ NON CORRETTO → principio violato + perché + rischio + cosa fare → "Prova nuovamente." (NON rispondere come cliente finché non corregge)
+   ❌ NON CORRETTO - Presentazione prematura → invita a continuare la scoperta
+
+2. RISPOSTA DEL CLIENTE (solo dopo ✅):
+   "👤 [Nome]:" + risposta realistica
+
+Non facilitare. Non regalare info.`;
+
+let S={sec:'',name:'',ini:'',msgs:[],loading:false};
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');}
+function st(t){$('stxt').textContent=t;}
+
+function checkPwd(){
+  const v=$('pwdInput').value.trim();
+  if(v==='Prede56'){
+    $('pwdError').style.display='none';
+    st('Autenticato · Scegli settore');
+    buildGrid();show('s-sec');
+  }else{
+    $('pwdError').style.display='block';
+    $('pwdInput').value='';
+  }
+}
+$('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPwd();});
+
+function buildGrid(){
+  const g=$('secGrid');g.innerHTML='';
+  SECTS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='sec-btn';
+    b.innerHTML=`<span class="sec-n">${String(i+1).padStart(2,'0')}</span><span class="sec-name">${s}</span>`;
+    b.onclick=()=>startSim(s);
+    g.appendChild(b);
+  });
+}
+
+async function startSim(sec){
+  S.sec=sec;st('Generazione cliente · '+sec);
+  show('s-sim');
+  $('chatMsgs').innerHTML='';$('cliCard').innerHTML='';S.msgs=[];
+  const p=`Settore: "${sec}". Genera cliente realistico. Mostra SOLO:\n- Nome e cognome\n- Età\n- Professione\n- Stato civile\n- Nucleo familiare\n\nPoi saluto del cliente.\n\nSCHEDA CLIENTE:\n[dati]\n\n---\n👤 [Nome]: [saluto]`;
+  addLoad();
+  try{const r=await api(p,true);rmLoad();parseInit(r);}
+  catch(e){rmLoad();sysMsg('Errore di connessione. Riprova.','info');}
+}
+
+function parseInit(text){
+  const lines=text.split('\n');
+  let sch='',gr='',inS=false,afterD=false;
+  for(const l of lines){
+    if(l.includes('SCHEDA CLIENTE')){inS=true;continue;}
+    if(l.includes('---')){inS=false;afterD=true;continue;}
+    if(inS)sch+=l+'\n';
+    if(afterD&&l.trim())gr+=l+' ';
+  }
+  const nm=sch.match(/(?:Nome[^:]*:|^)([A-Z][a-zàèéìòùü]+\s+[A-Z][a-zàèéìòùü]+)/m);
+  S.name=nm?nm[1].trim():'Cliente';
+  S.ini=S.name.split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2);
+  $('chatAva').textContent=S.ini;
+  $('chatName').textContent=S.name;
+  buildCli(sch);
+  const gc=gr.replace(/^👤[^:]*:/,'').trim();
+  if(gc){cliMsg(gc);S.msgs.push({role:'assistant',content:text});}
+  st('Simulazione · '+S.sec+' · '+S.name);
+}
+
+function buildCli(sch){
+  const lines=sch.split('\n').filter(l=>l.trim());
+  let dh='';
+  lines.forEach(l=>{
+    const p=l.split(':');
+    if(p.length>=2){
+      const label=p[0].trim(),val=p.slice(1).join(':').trim();
+      if(val&&!label.toLowerCase().includes('nome'))
+        dh+=`<div><div class="cli-lbl">${label}</div><div class="cli-val">${val}</div></div>`;
+    }
+  });
+  $('cliCard').innerHTML=`<div class="cli-card"><div class="cli-ava">${S.ini}</div><div class="cli-info"><div class="cli-tag">${S.sec}</div><div class="cli-name">${S.name}</div><div class="cli-grid">${dh}</div></div></div>`;
+}
+
+function cliMsg(t){addMsg('cli',S.name,t);}
+function usrMsg(t){addMsg('usr','Tu · consulente',t);}
+function sysMsg(text,type){
+  const m=$('chatMsgs'),d=document.createElement('div');
+  d.className=`msg sys ${type}`;
+  d.innerHTML=`<div class="msg-bub">${text.replace(/\n/g,'<br>')}</div>`;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function addMsg(type,label,text){
+  const m=$('chatMsgs'),d=document.createElement('div');
+  d.className=`msg ${type}`;
+  d.innerHTML=`<div class="msg-lbl">${label}</div><div class="msg-bub">${text}</div>`;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function addLoad(){
+  const m=$('chatMsgs'),d=document.createElement('div');
+  d.className='msg cli';d.id='ldMsg';
+  d.innerHTML=`<div class="msg-lbl">&nbsp;</div><div class="msg-bub"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function rmLoad(){const e=$('ldMsg');if(e)e.remove();}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function ar(el){el.style.height='40px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+async function send(){
+  if(S.loading)return;
+  const inp=$('userIn'),t=inp.value.trim();
+  if(!t)return;
+  inp.value='';inp.style.height='40px';
+  usrMsg(t);S.msgs.push({role:'user',content:t});
+  S.loading=true;$('sndBtn').disabled=true;addLoad();
+  try{
+    const r=await api(null,false);rmLoad();
+    S.msgs.push({role:'assistant',content:r});parseResp(r);
+  }catch(e){rmLoad();sysMsg('Errore di connessione. Riprova.','info');}
+  S.loading=false;$('sndBtn').disabled=false;
+}
+
+function parseResp(text){
+  const ok=text.includes('✅'),no=text.includes('❌');
+  const ca=text.match(/👤[^:]*:([\s\S]+)$/);
+  if(no){sysMsg(text.replace(/👤[^:]*:[\s\S]*$/,'').trim(),'no');}
+  else if(ok){
+    const ei=text.indexOf('👤');
+    sysMsg(ei>0?text.substring(0,ei).trim():text,'ok');
+    if(ca)cliMsg(ca[1].trim());
+  }else{
+    if(ca)cliMsg(ca[1].trim());
+    else sysMsg(text,'info');
+  }
+}
+
+async function endSim(){
+  if(S.loading)return;S.loading=true;
+  const ep=`Simulazione terminata. VALUTAZIONE FINALE:\n\nPUNTEGGI (1-10):\n- Costruzione del patto: X/10\n- Qualità delle domande: X/10\n- Scoperta dei bisogni: X/10\n- Ascolto: X/10\n- Comunicazione persuasiva: X/10\n- Gestione delle obiezioni: X/10\n- Presentazione della soluzione: X/10\n- Chiusura: X/10\n- MEDIA FINALE: X/10\n\nLIVELLO: [Principiante/Base/Intermedio/Avanzato/Consulente Persuasivo]\n\nPUNTI DI FORZA:\n[elenco]\n\nPUNTI DA MIGLIORARE:\n[elenco]\n\nERRORI PRINCIPALI:\n[elenco]\n\nCOSA ALLENARE DI PIÙ:\n[indicazione]`;
+  S.msgs.push({role:'user',content:ep});addLoad();
+  try{const r=await api(null,false);rmLoad();showRes(r);}
+  catch(e){rmLoad();sysMsg('Errore. Riprova.','info');}
+  S.loading=false;
+}
+
+function showRes(text){
+  show('s-res');
+  const c=$('resContent');
+  const sr=/[-•]\s*([^:]+):\s*(\d+(?:\.\d+)?)\/10/g;
+  const sc=[];let m;
+  while((m=sr.exec(text))!==null)sc.push({l:m[1].trim(),v:parseFloat(m[2])});
+  const lm=text.match(/LIVELLO:\s*([^\n]+)/);
+  const lv=lm?lm[1].trim():'';
+  const s1=text.match(/PUNTI DI FORZA:([\s\S]*?)(?=PUNTI DA MIGLIORARE|$)/);
+  const s2=text.match(/PUNTI DA MIGLIORARE:([\s\S]*?)(?=ERRORI PRINCIPALI|$)/);
+  const s3=text.match(/ERRORI PRINCIPALI:([\s\S]*?)(?=COSA ALLENARE|$)/);
+  const s4=text.match(/COSA ALLENARE[^:]*:([\s\S]*?)$/);
+  let rows='';
+  sc.forEach(s=>{
+    const cls=s.v>=7?'hi':s.v>=5?'md':'lo';
+    const b=s.l.toLowerCase().includes('media')?'font-weight:700':'';
+    rows+=`<tr><td style="${b}">${s.l}</td><td><span class="sv ${cls}">${s.v}/10</span></td></tr>`;
+  });
+  const fmt=t=>{
+    if(!t)return'';
+    return'<ul class="fb-list">'+t.trim().split('\n').filter(l=>l.trim()).map(l=>`<li>${l.replace(/^[-•]\s*/,'')}</li>`).join('')+'</ul>';
+  };
+  c.innerHTML=`
+    <div class="res-kicker">Sessione completata</div>
+    <div class="res-title">La tua valutazione</div>
+    <div class="res-sub">${S.sec} · ${S.name}</div>
+    ${lv?`<div class="lvl-badge"><i class="ti ti-trophy"></i>${lv}</div>`:''}
+    <div class="div"></div>
+    <div class="sec-lbl2">Punteggi per area</div>
+    <table class="sc-table"><thead><tr><th>Area</th><th>Voto</th></tr></thead><tbody>${rows}</tbody></table>
+    ${s1?`<div class="div"></div><div class="sec-lbl2">Punti di forza</div>${fmt(s1[1])}`:''}
+    ${s2?`<div class="div"></div><div class="sec-lbl2">Punti da migliorare</div>${fmt(s2[1])}`:''}
+    ${s3?`<div class="div"></div><div class="sec-lbl2">Errori principali</div>${fmt(s3[1])}`:''}
+    ${s4?`<div class="div"></div><div class="sec-lbl2">Cosa allenare di più</div><p style="font-size:13px;line-height:1.6;color:var(--text)">${s4[1].trim()}</p>`:''}
+    <div class="div"></div>
+    <div style="font-size:10px;color:rgba(107,122,144,0.6);text-align:center;letter-spacing:1px">Allenamento completato · Metodo QED</div>`;
+  st('Valutazione completata');
+}
+
+function reset(){
+  S={sec:'',name:'',ini:'',msgs:[],loading:false};
+  $('chatMsgs').innerHTML='';$('cliCard').innerHTML='';$('pwdInput').value='';
+  st('Accesso richiesto');show('s-pw');
+}
+
+async function api(over,init){
+  const msgs=init?[{role:'user',content:over}]:S.msgs.slice();
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:msgs})
+  });
+  if(!r.ok)throw new Error('err');
+  const d=await r.json();
+  return d.content.map(b=>b.text||'').join('');
+}
+</script>
+</body>
+</html>
